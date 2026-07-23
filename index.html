@@ -43,8 +43,10 @@
       </ul>
     </aside>
 
-    <!-- Spotify Player Section (បញ្ចូលអាល់ប៊ុម/បទ Spotify) -->
-    <section class="spotify-section" style="margin: 15px 0;">
+    <!-- Spotify Section (កន្លែងដាក់អាល់ប៊ុម និងបទចម្រៀង Spotify) -->
+    <section class="spotify-section" style="display: flex; flex-direction: column; gap: 15px; margin: 15px 0;">
+      
+      <!-- Spotify បទទី ១ (មុន) -->
       <iframe 
         style="border-radius:12px" 
         src="https://open.spotify.com/embed/track/1LQHFV3h3Sq5GtHOPEznSn?utm_source=generator" 
@@ -55,6 +57,19 @@
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
         loading="lazy">
       </iframe>
+
+      <!-- Spotify អាល់ប៊ុមថ្មី (ដែលអ្នកទើបផ្ញើមក) -->
+      <iframe 
+        style="border-radius:12px" 
+        src="https://open.spotify.com/embed/album/50FfMzzXAiUYYbIrUvRT8V?utm_source=generator" 
+        width="100%" 
+        height="352" 
+        frameBorder="0" 
+        allowfullscreen="" 
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        loading="lazy">
+      </iframe>
+
     </section>
 
     <!-- Center: Main Player & Lyrics -->
@@ -74,4 +89,4 @@
   <script src="script.js"></script>
 </body>
   </html>
-                                             
+        

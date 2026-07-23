@@ -3,75 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Music & Lyrics Player</title>
+  <title>Va Socheat - Spotify Music Player</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
+  <!-- អក្សរឈ្មោះរំលេចនៅខាងក្រោយ (Background Watermark) -->
+  <div class="bg-watermark">VA SOCHEAT</div>
+
+  <!-- Header Section -->
   <header>
     <div class="logo">
-      <i class="fa-solid fa-music"></i>
+      <i class="fa-brands fa-spotify"></i>
+      <span>Socheat Music</span>
     </div>
-    <div class="user-profile" id="userProfile">
-      <span id="userName">អ្នកប្រើប្រាស់</span>
-      <button onclick="logout()" class="btn-logout">ចាកចេញ</button>
+    <div class="user-status" id="userStatus">
+      <button class="btn-login" onclick="openLoginModal()"><i class="fa-solid fa-right-to-bracket"></i> ចូលប្រព័ន្ធ (Login)</button>
     </div>
   </header>
 
-  <!-- Main App Layout -->
-  <div class="app-container">
+  <!-- Main Container -->
+  <main class="main-container">
+    
+    <div class="welcome-card">
+      <h1>ស្វាគមន៍មកកាន់ពិភពតន្ត្រី <span>Va Socheat</span></h1>
+      <p>ស្តាប់បទចម្រៀង និងអាល់ប៊ុមពេញនិយមពី Spotify ដោយសេរី</p>
+    </div>
 
-    <!-- Left Sidebar: Playlist -->
-    <aside class="sidebar">
-      <h3><i class="fa-solid fa-list-ul"></i> បញ្ជីចម្រៀង</h3>
-      <ul id="playlist">
-        <li onclick="selectSong(0)" class="active">
-          <i class="fa-solid fa-compact-disc"></i>
-          <div>
-            <h4>បទទី ១ - ស្វាគមន៍</h4>
-            <p>តន្ត្រីសម្រាកអារម្មណ៍</p>
-          </div>
-        </li>
-        <li onclick="selectSong(1)">
-          <i class="fa-solid fa-compact-disc"></i>
-          <div>
-            <h4>បទទី ២ - ចង្វាក់រហ័ស</h4>
-            <p>បទភ្លេងសប្បាយៗ</p>
-          </div>
-        </li>
-      </ul>
-    </aside>
+    <!-- Spotify Player Section -->
+    <div class="spotify-wrapper">
+      <iframe 
+        style="border-radius:18px" 
+        src="https://open.spotify.com/embed/album/50FfMzzXAiUYYbIrUvRT8V?utm_source=generator&theme=0" 
+        width="100%" 
+        height="450" 
+        frameBorder="0" 
+        allowfullscreen="" 
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        loading="lazy">
+      </iframe>
+    </div>
 
-    <!-- Center: Main Section (Spotify Full Player & Custom Player) -->
-    <main class="player-section">
+  </main>
 
-      <!-- Spotify Full Player (បញ្ចូលអាល់ប៊ុម Spotify ពេញលេញ) -->
-      <div class="spotify-card" style="margin-bottom: 20px;">
-        <iframe 
-          style="border-radius:12px;" 
-          src="https://open.spotify.com/embed/album/50FfMzzXAiUYYbIrUvRT8V?utm_source=generator" 
-          width="100%" 
-          height="380" 
-          frameBorder="0" 
-          allowfullscreen="" 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy">
-        </iframe>
-      </div>
+  <!-- Login Modal Pop-up (ទម្រង់ចុះឈ្មោះ/ចូលប្រើប្រាស់) -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-card">
+      <button class="btn-close" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+      
+      <h2>ចូលប្រើប្រាស់ប្រព័ន្ធ</h2>
+      <p class="modal-sub">សូមជ្រើសរើសវិធីសាស្ត្រចូលប្រើប្រាស់</p>
 
-      <!-- Native Audio Player (កូដដើមរបស់អ្នក) -->
-      <div class="player-card">
-        <div class="song-info">
-          <h2 id="songTitle">បទទី ១ - ស្វាគមន៍</h2>
-          <p id="artistName">តន្ត្រីសម្រាកអារម្មណ៍</p>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <!-- Login តាម Gmail -->
+        <div class="input-group">
+          <label><i class="fa-envelope"></i> អ៊ីមែល / Gmail</label>
+          <input type="email" id="loginEmail" placeholder="ឧទាហរណ៍៖ example@gmail.com">
         </div>
 
-        <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" controls></audio>
-      </div>
+        <div class="divider"><span>ឬ</span></div>
 
-    </main>
+        <!-- Login តាមលេខទូរស័ព្ទ -->
+        <div class="input-group">
+          <label><i class="fa-phone"></i> លេខទូរស័ព្ទ</label>
+          <input type="tel" id="loginPhone" placeholder="ឧទាហរណ៍៖ 012345678">
+        </div>
 
+        <button type="submit" class="btn-submit">ចូលប្រើប្រាស់</button>
+      </form>
+    </div>
   </div>
 
   <script src="script.js"></script>

@@ -1,23 +1,14 @@
 let books = [
   {
-    title: "សៀវភៅឱសថសាស្ត្រ (Pharmacology)",
-    category: "ឱសថសាស្ត្រ",
-    author: "អ្នកនិពន្ធ៖ Dr. Socheat",
-    cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400",
-    link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    title: "ទស្សនវិទ្យា ផ្ទៃមុខ",
+    category: "អភិវឌ្ឍខ្លួន",
+    author: "អ្នកនិពន្ធ៖ Create by van",
+    cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400",
+    link: "https://drive.google.com" // ដាក់ Link សៀវភៅ PDF របស់អ្នកនៅទីនេះ
   }
 ];
 
 let currentCategory = "all";
-
-function readFileAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-    reader.readAsDataURL(file);
-  });
-}
 
 function displayBooks(bookArray) {
   const bookGrid = document.getElementById("bookGrid");
@@ -28,16 +19,16 @@ function displayBooks(bookArray) {
     return;
   }
 
-  bookArray.forEach((book, index) => {
+  bookArray.forEach(book => {
     const bookHTML = `
       <div class="book-card">
         <img src="${book.cover}" class="book-cover" alt="Cover">
         <span class="book-badge">${book.category}</span>
         <div class="book-title">${book.title}</div>
         <div class="book-author">${book.author}</div>
-        <button class="btn-read" onclick="openPdfModal(${index})">
+        <a href="${book.link}" target="_blank" rel="noopener noreferrer" class="btn-read">
           <i class="fa-solid fa-book-open"></i> អានសៀវភៅ
-        </button>
+        </a>
       </div>
     `;
     bookGrid.innerHTML += bookHTML;
@@ -62,59 +53,26 @@ function filterBooks() {
   displayBooks(filtered);
 }
 
-// បើក/បិទ Upload Form Modal
 function openUploadModal() { document.getElementById("uploadModal").classList.add("active"); }
 function closeUploadModal() { document.getElementById("uploadModal").classList.remove("active"); }
 
-// បើក/បិទ ផ្ទាំងអាន PDF
-function openPdfModal(index) {
-  const selectedBook = books[index];
-  document.getElementById("pdfTitle").innerText = selectedBook.title;
-  
-  // បញ្ចូល File PDF ទៅក្នុង iframe ផ្ទាល់ មិនឱ្យរត់ទៅ Tab ថ្មីនាំឱ្យ Block ឡើយ
-  document.getElementById("pdfViewer").src = selectedBook.link;
-  document.getElementById("pdfModal").classList.add("active");
-}
-
-function closePdfModal() {
-  document.getElementById("pdfModal").classList.remove("active");
-  document.getElementById("pdfViewer").src = "";
-}
-
-async function handleUpload(event) {
+function handleUpload(event) {
   event.preventDefault();
 
-  const submitBtn = document.getElementById("submitBtn");
-  submitBtn.innerText = "កំពុងរក្សាទុក...";
-  submitBtn.disabled = true;
+  const newBook = {
+    title: document.getElementById("bookTitle").value,
+    category: document.getElementById("bookCategory").value,
+    author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
+    cover: document.getElementById("bookCoverUrl").value,
+    link: document.getElementById("bookPdfUrl").value
+  };
 
-  try {
-    const coverFile = document.getElementById("bookCoverFile").files[0];
-    const pdfFile = document.getElementById("bookPdfFile").files[0];
+  books.unshift(newBook);
+  filterBooks();
 
-    const coverDataUrl = await readFileAsDataURL(coverFile);
-    const pdfDataUrl = await readFileAsDataURL(pdfFile);
-
-    const newBook = {
-      title: document.getElementById("bookTitle").value,
-      category: document.getElementById("bookCategory").value,
-      author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
-      cover: coverDataUrl,
-      link: pdfDataUrl
-    };
-
-    books.unshift(newBook);
-    filterBooks();
-
-    closeUploadModal();
-    document.getElementById("uploadForm").reset();
-    alert("បន្ថែមសៀវភៅជោគជ័យ!");
-  } catch (error) {
-    alert("មានបញ្ហាក្នុងការអាប់ឡូត File!");
-  } finally {
-    submitBtn.innerText = "រក្សាទុកសៀវភៅ";
-    submitBtn.disabled = false;
-  }
+  closeUploadModal();
+  document.getElementById("uploadForm").reset();
+  alert("បន្ថែមសៀវភៅជោគជ័យ!");
 }
 
 displayBooks(books);

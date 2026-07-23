@@ -1,88 +1,31 @@
-<!DOCTYPE html>
-<html lang="km">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Socheat Smart Library</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
+<!-- បន្ថែមប៊ូតុងនេះក្នុង <div class="header-actions"> នៃ Header -->
+<button class="btn-qcm" onclick="openQcmModal()">
+  <i class="fa-solid fa-stopwatch"></i> ប្រឡង QCM
+</button>
 
-  <div class="bg-watermark">VA SOCHEAT</div>
-
-  <header>
-    <div class="logo">
-      <i class="fa-solid fa-book-open-reader"></i>
-      <span>Socheat Library</span>
-    </div>
-    
-    <div class="header-actions">
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" onkeyup="filterBooks()" placeholder="ស្វែងរកសៀវភៅ...">
+<!-- បន្ថែម Modal QCM នេះនៅខាងក្រោមគេបង្អស់នៃ index.html (មុន <script src="script.js">) -->
+<div class="qcm-modal-overlay" id="qcmModal">
+  <div class="qcm-card">
+    <div class="qcm-header">
+      <h2><i class="fa-solid fa-file-pen"></i> ប្រឡង QCM ឱសថសាស្ត្រ</h2>
+      <div class="timer-box" id="timerBox">
+        <i class="fa-solid fa-clock"></i> <span id="timeDisplay">10:00</span>
       </div>
-      <button class="btn-add" onclick="openUploadModal()"><i class="fa-solid fa-plus"></i> បន្ថែមសៀវភៅ</button>
-    </div>
-  </header>
-
-  <main class="main-container">
-    <div class="category-container">
-      <h3><i class="fa-solid fa-layer-group"></i> មុខវិជ្ជា៖</h3>
-      <div class="category-buttons" id="categoryButtons">
-        <button class="cat-btn active" onclick="selectCategory('all')">ទាំងអស់</button>
-        <button class="cat-btn" onclick="selectCategory('ឱសថសាស្ត្រ')">💊 ឱសថសាស្ត្រ</button>
-        <button class="cat-btn" onclick="selectCategory('កាយវិភាគសាស្ត្រ')">🫀 កាយវិភាគសាស្ត្រ</button>
-        <button class="cat-btn" onclick="selectCategory('ព័ត៌មានវិទ្យា')">💻 ព័ត៌មានវិទ្យា</button>
-        <button class="cat-btn" onclick="selectCategory('អភិវឌ្ឍខ្លួន')">💡 អភិវឌ្ឍខ្លួន</button>
-      </div>
+      <button class="btn-close-qcm" onclick="closeQcmModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <div class="book-grid" id="bookGrid"></div>
-  </main>
+    <!-- ផ្ទាំងសំណួរ -->
+    <div id="qcmBody" class="qcm-body">
+      <div id="questionContainer"></div>
+      <button class="btn-submit-qcm" onclick="submitQcm()">បញ្ជូនចម្លើយ (Submit)</button>
+    </div>
 
-  <!-- Modal/Pop-up បន្ថែមសៀវភៅ -->
-  <div class="modal-overlay" id="uploadModal">
-    <div class="modal-card">
-      <button class="btn-close" onclick="closeUploadModal()"><i class="fa-solid fa-xmark"></i></button>
-      <h2><i class="fa-solid fa-file-circle-plus"></i> បន្ថែមសៀវភៅថ្មី</h2>
-      <form id="uploadForm" onsubmit="handleUpload(event)">
-        
-        <div class="input-group">
-          <label>ចំណងជើងសៀវភៅ</label>
-          <input type="text" id="bookTitle" placeholder="ឧទាហរណ៍៖ មូលដ្ឋានគ្រឹះ ECG" required>
-        </div>
-
-        <div class="input-group">
-          <label>មុខវិជ្ជា</label>
-          <select id="bookCategory" required>
-            <option value="ឱសថសាស្ត្រ">💊 ឱសថសាស្ត្រ</option>
-            <option value="កាយវិភាគសាស្ត្រ">🫀 កាយវិភាគសាស្ត្រ</option>
-            <option value="ព័ត៌មានវិទ្យា">💻 ព័ត៌មានវិទ្យា</option>
-            <option value="អភិវឌ្ឍខ្លួន">💡 អភិវឌ្ឍខ្លួន</option>
-          </select>
-        </div>
-
-        <div class="input-group">
-          <label>ឈ្មោះអ្នកនិពន្ធ</label>
-          <input type="text" id="bookAuthor" placeholder="ឧទាហរណ៍៖ Create by van" required>
-        </div>
-
-        <div class="input-group">
-          <label>Link រូបភាព Cover (URL)</label>
-          <input type="url" id="bookCoverUrl" placeholder="https://example.com/cover.jpg" required>
-        </div>
-
-        <div class="input-group">
-          <label>Link File PDF សៀវភៅ (Google Drive / Direct Link)</label>
-          <input type="url" id="bookPdfUrl" placeholder="https://drive.google.com/..." required>
-        </div>
-
-        <button type="submit" class="btn-submit">រក្សាទុកសៀវភៅ</button>
-      </form>
+    <!-- ផ្ទាំងបង្ហាញលទ្ធផល -->
+    <div id="qcmResult" class="qcm-result" style="display: none;">
+      <i class="fa-solid fa-trophy trophy-icon"></i>
+      <h3>លទ្ធផលនៃការប្រឡង</h3>
+      <p id="scoreText" class="score-text">អ្នកទទួលបាន 0 / 0 ពិន្ទុ</p>
+      <button class="btn-submit-qcm" onclick="restartQcm()"><i class="fa-solid fa-rotate-right"></i> ធ្វើម្តងទៀត</button>
     </div>
   </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+</div>

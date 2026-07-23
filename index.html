@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទខ្មែរ (TTS)</title>
+  <title>កម្មវិធីអានអត្ថបទខ្មែរ</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,33 +12,54 @@
   <div class="tts-container">
     <div class="tts-header">
       <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទខ្មែរ (TTS)</h2>
-      <p>បញ្ចូលអក្សរខ្មែរខាងក្រោម រួចចុច "ចាក់សំឡេង"</p>
+      <p>បញ្ចូលអក្សរខ្មែរ រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
     <div class="input-group">
       <textarea id="textInput" placeholder="សូមបញ្ចូលអត្ថបទខ្មែរនៅទីនេះ..."></textarea>
     </div>
 
-    <div class="controls-grid">
-      <div class="control-card">
-        <label for="rateRange"><i class="fa-solid fa-gauge-high"></i> ល្បឿនអាន: <span id="rateVal">1.0</span>x</label>
-        <input type="range" id="rateRange" min="0.5" max="1.5" step="0.1" value="1">
-      </div>
+    <!-- Audio Player សម្រាប់ចាក់សំឡេង direct -->
+    <div style="margin: 15px 0;">
+      <audio id="audioPlayer" controls style="width: 100%; display: none;"></audio>
     </div>
 
     <div class="button-group">
-      <button id="btnPlay" class="btn btn-play" onclick="speakText()">
+      <button id="btnPlay" class="btn btn-play" onclick="playKhmerAudio()">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-      <button id="btnStop" class="btn btn-stop" onclick="stopText()">
-        <i class="fa-solid fa-square"></i> បញ្ឈប់
-      </button>
-      <button id="btnClear" class="btn btn-clear" onclick="clearText()">
+      <button id="btnClear" class="btn btn-clear" onclick="clearAll()">
         <i class="fa-solid fa-trash-can"></i> លុបអក្សរ
       </button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    function playKhmerAudio() {
+      const text = document.getElementById('textInput').value.trim();
+      const player = document.getElementById('audioPlayer');
+
+      if (!text) {
+        alert("សូមបញ្ចូលអត្ថបទខ្មែរជាមុនសិន!");
+        return;
+      }
+
+      // ប្រើ StreamElements API សម្រាប់បង្កើត Audio Link ភាសាខ្មែរ
+      const cleanText = encodeURIComponent(text);
+      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=Khmer&text=${cleanText}`;
+
+      player.src = audioUrl;
+      player.style.display = "block"; // បង្ហាញ Player ពេលចុច
+      player.play();
+    }
+
+    function clearAll() {
+      const player = document.getElementById('audioPlayer');
+      document.getElementById('textInput').value = '';
+      player.pause();
+      player.currentTime = 0;
+      player.style.display = "none";
+    }
+  </script>
 </body>
 </html>

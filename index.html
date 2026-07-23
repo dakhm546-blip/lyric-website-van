@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Va Socheat - Spotify Music Player</title>
+  <title>Va Socheat - Smart Calculator</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,66 +12,41 @@
   <!-- អក្សរឈ្មោះរំលេចនៅខាងក្រោយ (Background Watermark) -->
   <div class="bg-watermark">VA SOCHEAT</div>
 
-  <!-- Header Section -->
-  <header>
-    <div class="logo">
-      <i class="fa-brands fa-spotify"></i>
-      <span>Socheat Music</span>
-    </div>
-    <div class="user-status" id="userStatus">
-      <button class="btn-login" onclick="openLoginModal()"><i class="fa-solid fa-right-to-bracket"></i> ចូលប្រព័ន្ធ (Login)</button>
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <main class="main-container">
-    
-    <div class="welcome-card">
-      <h1>ស្វាគមន៍មកកាន់ពិភពតន្ត្រី <span>Va Socheat</span></h1>
-      <p>ស្តាប់បទចម្រៀង និងអាល់ប៊ុមពេញនិយមពី Spotify ដោយសេរី</p>
+  <div class="calculator-container">
+    <div class="calculator-header">
+      <i class="fa-solid fa-calculator"></i>
+      <span>Socheat Calculator</span>
     </div>
 
-    <!-- Spotify Player Section -->
-    <div class="spotify-wrapper">
-      <iframe 
-        style="border-radius:18px" 
-        src="https://open.spotify.com/embed/album/50FfMzzXAiUYYbIrUvRT8V?utm_source=generator&theme=0" 
-        width="100%" 
-        height="450" 
-        frameBorder="0" 
-        allowfullscreen="" 
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-        loading="lazy">
-      </iframe>
+    <!-- អេក្រង់បង្ហាញលេខ -->
+    <div class="display">
+      <input type="text" id="result" placeholder="0" readonly>
     </div>
 
-  </main>
+    <!-- ប៊ូតុងចុចគណនា -->
+    <div class="buttons">
+      <button class="btn btn-action" onclick="clearDisplay()">C</button>
+      <button class="btn btn-action" onclick="deleteChar()"><i class="fa-solid fa-backspace"></i></button>
+      <button class="btn btn-operator" onclick="appendValue('/')">÷</button>
+      <button class="btn btn-operator" onclick="appendValue('*')">×</button>
 
-  <!-- Login Modal Pop-up (ទម្រង់ចុះឈ្មោះ/ចូលប្រើប្រាស់) -->
-  <div class="modal-overlay" id="loginModal">
-    <div class="modal-card">
-      <button class="btn-close" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
-      
-      <h2>ចូលប្រើប្រាស់ប្រព័ន្ធ</h2>
-      <p class="modal-sub">សូមជ្រើសរើសវិធីសាស្ត្រចូលប្រើប្រាស់</p>
+      <button class="btn" onclick="appendValue('7')">7</button>
+      <button class="btn" onclick="appendValue('8')">8</button>
+      <button class="btn" onclick="appendValue('9')">9</button>
+      <button class="btn btn-operator" onclick="appendValue('-')">-</button>
 
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <!-- Login តាម Gmail -->
-        <div class="input-group">
-          <label><i class="fa-envelope"></i> អ៊ីមែល / Gmail</label>
-          <input type="email" id="loginEmail" placeholder="ឧទាហរណ៍៖ example@gmail.com">
-        </div>
+      <button class="btn" onclick="appendValue('4')">4</button>
+      <button class="btn" onclick="appendValue('5')">5</button>
+      <button class="btn" onclick="appendValue('6')">6</button>
+      <button class="btn btn-operator" onclick="appendValue('+')">+</button>
 
-        <div class="divider"><span>ឬ</span></div>
+      <button class="btn" onclick="appendValue('1')">1</button>
+      <button class="btn" onclick="appendValue('2')">2</button>
+      <button class="btn" onclick="appendValue('3')">3</button>
+      <button class="btn btn-equal" onclick="calculateResult()" style="grid-row: span 2;">=</button>
 
-        <!-- Login តាមលេខទូរស័ព្ទ -->
-        <div class="input-group">
-          <label><i class="fa-phone"></i> លេខទូរស័ព្ទ</label>
-          <input type="tel" id="loginPhone" placeholder="ឧទាហរណ៍៖ 012345678">
-        </div>
-
-        <button type="submit" class="btn-submit">ចូលប្រើប្រាស់</button>
-      </form>
+      <button class="btn btn-zero" onclick="appendValue('0')">0</button>
+      <button class="btn" onclick="appendValue('.')">.</button>
     </div>
   </div>
 

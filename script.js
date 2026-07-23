@@ -1,12 +1,20 @@
-// បញ្ជីសៀវភៅដែលមានក្នុង Website
+// បញ្ជីសៀវភៅទាំងអស់ដែលមានក្នុង Website
 let books = [
   {
     id: 1,
     title: "ទស្សនវិទ្យា ផ្ទៃមុខ",
     category: "អភិវឌ្ឍខ្លួន",
     author: "អ្នកនិពន្ធ៖ Create by van",
-    cover: "https://lh3.googleusercontent.com/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj", // Direct Link រូប Cover របស់អ្នក
-    link: "https://drive.google.com/file/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj/view?usp=sharing" // Link PDF សៀវភៅរបស់អ្នក
+    cover: "https://lh3.googleusercontent.com/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj",
+    link: "https://drive.google.com/file/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj/view?usp=sharing"
+  },
+  {
+    id: 2,
+    title: "សៀវភៅទី ២", // 📝 អ្នកអាចដូរចំណងជើងត្រង់នេះតាមចិត្តបាន
+    category: "ឱសថសាស្ត្រ", // 📝 អ្នកអាចដូរមុខវិជ្ជាត្រង់នេះបាន (ឱសថសាស្ត្រ, កាយវិភាគសាស្ត្រ, ព័ត៌មានវិទ្យា...)
+    author: "អ្នកនិពន្ធ៖ Create by van",
+    cover: "https://lh3.googleusercontent.com/d/17r98UwCRcvioXwnwJ2D9L0FwlvklO5JK", // Direct Link រូបភាពគំរូពី Drive ថ្មី
+    link: "https://drive.google.com/file/d/17r98UwCRcvioXwnwJ2D9L0FwlvklO5JK/view?usp=sharing" // Link File PDF ថ្មីរបស់អ្នក
   }
 ];
 
@@ -85,3 +93,4 @@ function handleUpload(event) {
 
 // ដំណើរការបង្ហាញសៀវភៅដំបូង
 displayBooks(books);
+  

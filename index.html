@@ -3,52 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Va Socheat - Smart Calculator</title>
+  <title>Va Socheat - E-Book Library</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- អក្សរឈ្មោះរំលេចនៅខាងក្រោយ (Background Watermark) -->
+  <!-- អក្សរឈ្មោះរំលេចនៅ Background -->
   <div class="bg-watermark">VA SOCHEAT</div>
 
-  <div class="calculator-container">
-    <div class="calculator-header">
-      <i class="fa-solid fa-calculator"></i>
-      <span>Socheat Calculator</span>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <i class="fa-solid fa-book-open-reader"></i>
+      <span>Socheat Library</span>
+    </div>
+    
+    <!-- ប្រអប់ស្វែងរកសៀវភៅ -->
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ស្វែងរកសៀវភៅ...">
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <div class="section-title">
+      <h2>📚 បញ្ជីសៀវភៅទាំងអស់</h2>
+      <p>ជ្រើសរើសសៀវភៅដែលអ្នកចង់អាន ឬទាញយក</p>
     </div>
 
-    <!-- អេក្រង់បង្ហាញលេខ -->
-    <div class="display">
-      <input type="text" id="result" placeholder="0" readonly>
+    <!-- កន្លែងបង្ហាញសៀវភៅ (Book Grid) -->
+    <div class="book-grid" id="bookGrid">
+      <!-- សៀវភៅនឹងបង្ហាញនៅទីនេះតាមរយៈ JavaScript -->
     </div>
-
-    <!-- ប៊ូតុងចុចគណនា -->
-    <div class="buttons">
-      <button class="btn btn-action" onclick="clearDisplay()">C</button>
-      <button class="btn btn-action" onclick="deleteChar()"><i class="fa-solid fa-backspace"></i></button>
-      <button class="btn btn-operator" onclick="appendValue('/')">÷</button>
-      <button class="btn btn-operator" onclick="appendValue('*')">×</button>
-
-      <button class="btn" onclick="appendValue('7')">7</button>
-      <button class="btn" onclick="appendValue('8')">8</button>
-      <button class="btn" onclick="appendValue('9')">9</button>
-      <button class="btn btn-operator" onclick="appendValue('-')">-</button>
-
-      <button class="btn" onclick="appendValue('4')">4</button>
-      <button class="btn" onclick="appendValue('5')">5</button>
-      <button class="btn" onclick="appendValue('6')">6</button>
-      <button class="btn btn-operator" onclick="appendValue('+')">+</button>
-
-      <button class="btn" onclick="appendValue('1')">1</button>
-      <button class="btn" onclick="appendValue('2')">2</button>
-      <button class="btn" onclick="appendValue('3')">3</button>
-      <button class="btn btn-equal" onclick="calculateResult()" style="grid-row: span 2;">=</button>
-
-      <button class="btn btn-zero" onclick="appendValue('0')">0</button>
-      <button class="btn" onclick="appendValue('.')">.</button>
-    </div>
-  </div>
+  </main>
 
   <script src="script.js"></script>
 </body>

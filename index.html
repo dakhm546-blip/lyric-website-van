@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Va Socheat - Smart E-Library</title>
+  <title>Socheat Smart Library</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Background Watermark -->
   <div class="bg-watermark">VA SOCHEAT</div>
 
-  <!-- Header -->
   <header>
     <div class="logo">
       <i class="fa-solid fa-book-open-reader"></i>
@@ -24,14 +22,11 @@
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="searchInput" onkeyup="filterBooks()" placeholder="ស្វែងរកសៀវភៅ...">
       </div>
-
       <button class="btn-add" onclick="openUploadModal()"><i class="fa-solid fa-plus"></i> បន្ថែមសៀវភៅ</button>
     </div>
   </header>
 
   <main class="main-container">
-    
-    <!-- Categories -->
     <div class="category-container">
       <h3><i class="fa-solid fa-layer-group"></i> មុខវិជ្ជា៖</h3>
       <div class="category-buttons" id="categoryButtons">
@@ -43,14 +38,10 @@
       </div>
     </div>
 
-    <!-- Book Grid -->
-    <div class="book-grid" id="bookGrid">
-      <!-- សៀវភៅនឹងបង្ហាញនៅទីនេះ -->
-    </div>
-
+    <div class="book-grid" id="bookGrid"></div>
   </main>
 
-  <!-- Modal/Pop-up សម្រាប់ Upload File -->
+  <!-- Modal/Pop-up បន្ថែមសៀវភៅ -->
   <div class="modal-overlay" id="uploadModal">
     <div class="modal-card">
       <button class="btn-close" onclick="closeUploadModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -74,36 +65,24 @@
 
         <div class="input-group">
           <label>ឈ្មោះអ្នកនិពន្ធ</label>
-          <input type="text" id="bookAuthor" placeholder="ឧទាហរណ៍៖ Dr. Socheat" required>
+          <input type="text" id="bookAuthor" placeholder="ឧទាហរណ៍៖ Create by van" required>
         </div>
 
         <div class="input-group">
-          <label><i class="fa-solid fa-image"></i> អាប់ឡូតរូបភាព Cover</label>
-          <input type="file" id="bookCoverFile" accept="image/*" required>
+          <label>Link រូបភាព Cover (URL)</label>
+          <input type="url" id="bookCoverUrl" placeholder="https://example.com/cover.jpg" required>
         </div>
 
         <div class="input-group">
-          <label><i class="fa-solid fa-file-pdf"></i> អាប់ឡូត File PDF សៀវភៅ</label>
-          <input type="file" id="bookPdfFile" accept="application/pdf" required>
+          <label>Link File PDF សៀវភៅ (Google Drive / Direct Link)</label>
+          <input type="url" id="bookPdfUrl" placeholder="https://drive.google.com/..." required>
         </div>
 
-        <button type="submit" class="btn-submit" id="submitBtn">រក្សាទុកសៀវភៅ</button>
+        <button type="submit" class="btn-submit">រក្សាទុកសៀវភៅ</button>
       </form>
-    </div>
-  </div>
-
-  <!-- Modal សម្រាប់បើកមើល PDF ក្នុង Web ផ្ទាល់ (ការពារមិនឱ្យ Browser Block) -->
-  <div class="pdf-modal-overlay" id="pdfModal">
-    <div class="pdf-modal-card">
-      <div class="pdf-header">
-        <span id="pdfTitle">អានសៀវភៅ</span>
-        <button class="btn-close-pdf" onclick="closePdfModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <iframe id="pdfViewer" src="" frameborder="0"></iframe>
     </div>
   </div>
 
   <script src="script.js"></script>
 </body>
-  </html>
-          
+</html>

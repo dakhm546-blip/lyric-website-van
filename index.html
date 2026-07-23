@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>khuon thavan/title> - Smart E-Library</title>
+  <title>Va Socheat - Smart E-Library</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- អក្សរឈ្មោះរំលេចនៅ Background -->
-  <div class="bg-watermark">ព្យាយាមគង់បានសម្រេច</div>
+  <!-- Background Watermark -->
+  <div class="bg-watermark">VA SOCHEAT</div>
 
   <!-- Header -->
   <header>
@@ -77,13 +77,11 @@
           <input type="text" id="bookAuthor" placeholder="ឧទាហរណ៍៖ Dr. Socheat" required>
         </div>
 
-        <!-- ជ្រើសរើស File រូបភាព Cover -->
         <div class="input-group">
           <label><i class="fa-solid fa-image"></i> អាប់ឡូតរូបភាព Cover</label>
           <input type="file" id="bookCoverFile" accept="image/*" required>
         </div>
 
-        <!-- ជ្រើសរើស File PDF -->
         <div class="input-group">
           <label><i class="fa-solid fa-file-pdf"></i> អាប់ឡូត File PDF សៀវភៅ</label>
           <input type="file" id="bookPdfFile" accept="application/pdf" required>
@@ -94,7 +92,18 @@
     </div>
   </div>
 
+  <!-- Modal សម្រាប់បើកមើល PDF ក្នុង Web ផ្ទាល់ (ការពារមិនឱ្យ Browser Block) -->
+  <div class="pdf-modal-overlay" id="pdfModal">
+    <div class="pdf-modal-card">
+      <div class="pdf-header">
+        <span id="pdfTitle">អានសៀវភៅ</span>
+        <button class="btn-close-pdf" onclick="closePdfModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <iframe id="pdfViewer" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
   </html>
-  
+          

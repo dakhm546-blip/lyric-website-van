@@ -1,96 +1,157 @@
-// បញ្ជីសៀវភៅទាំងអស់ដែលមានក្នុង Website
-let books = [
+// ==================== ផ្នែក QCM & TIMER (សំណួរ ១០) ====================
+
+// ១. បញ្ជីសំណួរ QCM ទាំង ១០ សំណួរ
+const qcmQuestions = [
   {
     id: 1,
-    title: "ទស្សនវិទ្យា ផ្ទៃមុខ",
-    category: "អភិវឌ្ឍខ្លួន",
-    author: "អ្នកនិពន្ធ៖ Create by van",
-    cover: "https://lh3.googleusercontent.com/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj",
-    link: "https://drive.google.com/file/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj/view?usp=sharing"
+    question: "១. តើអង្គរវត្ត ត្រូវបានសាងសង់ក្នុងសម័យណា?",
+    options: ["A. សម័យហ្វូណន", "B. សម័យចេនឡា", "C. សម័យអង្គរ", "D. សម័យបន្ទាយស្រី"],
+    correct: 2 // C. សម័យអង្គរ
   },
   {
     id: 2,
-    title: "សៀវភៅទី ២", // 📝 អ្នកអាចដូរចំណងជើងត្រង់នេះតាមចិត្តបាន
-    category: "ឱសថសាស្ត្រ", // 📝 អ្នកអាចដូរមុខវិជ្ជាត្រង់នេះបាន (ឱសថសាស្ត្រ, កាយវិភាគសាស្ត្រ, ព័ត៌មានវិទ្យា...)
-    author: "អ្នកនិពន្ធ៖ Create by van",
-    cover: "https://lh3.googleusercontent.com/d/17r98UwCRcvioXwnwJ2D9L0FwlvklO5JK", // Direct Link រូបភាពគំរូពី Drive ថ្មី
-    link: "https://drive.google.com/file/d/17r98UwCRcvioXwnwJ2D9L0FwlvklO5JK/view?usp=sharing" // Link File PDF ថ្មីរបស់អ្នក
+    question: "២. តើព្រះបាទសូរ្យវរ្ម័នទី២ ជាអ្នកសាងសង់អ្វី?",
+    options: ["A. ប្រាសាទបាយ័ន", "B. អង្គរវត្ត", "C. ប្រាសាទព្រះវិហារ", "D. ប្រាសាទតាព្រហ្ម"],
+    correct: 1 // B. អង្គរវត្ត
+  },
+  {
+    id: 3,
+    question: "៣. តើរាជធានីអង្គរមានទីតាំងនៅទីណា?",
+    options: ["A. ភ្នំពេញ", "B. សៀមរាប", "C. បាត់ដំបង", "D. កំពង់ចាម"],
+    correct: 1 // B. សៀមរាប
+  },
+  {
+    id: 4,
+    question: "៤. តើសម័យហ្វូណនមានមុនសម័យណា?",
+    options: ["A. ចេនឡា", "B. អង្គរ", "C. ឡុងវែក", "D. អ៊ុដុង្គ"],
+    correct: 0 // A. ចេនឡា
+  },
+  {
+    id: 5,
+    question: "៥. តើប្រាសាទបាយ័នល្បីដោយសារអ្វី?",
+    options: ["A. រូបព្រះវិហារ", "B. មុខព្រះច្រើន", "C. ទំហំធំ", "D. មានទឹកជុំវិញ"],
+    correct: 1 // B. មុខព្រះច្រើន
+  },
+  {
+    id: 6,
+    question: "៦. តើព្រះបាទជ័យវរ្ម័នទី៧ មានឈ្មោះល្បីក្នុងអ្វី?",
+    options: ["A. សាងសង់ប្រាសាទច្រើន", "B. សង្គ្រាមជាច្រើន", "C. ជាអ្នកជួសជុលអង្គរវត្ត", "D. បង្កើតភ្នំពេញ"],
+    correct: 0 // A. សាងសង់ប្រាសាទច្រើន
+  },
+  {
+    id: 7,
+    question: "៧. តើសម័យណាដែលអាណាចក្រខ្មែរ មានអំណាចខ្លាំងបំផុត?",
+    options: ["A. ហ្វូណន", "B. ចេនឡា", "C. អង្គរ", "D. បន្ទាយមានជ័យ"],
+    correct: 2 // C. អង្គរ
+  },
+  {
+    id: 8,
+    question: "៨. តើប្រាសាទតាព្រហ្មល្បីដោយសារអ្វី?",
+    options: ["A. មានសំណង់ថ្មស", "B. មានដើមឈើពាក់ជាប់", "C. មានទឹកជុំវិញ", "D. មានស្ពានធំ"],
+    correct: 1 // B. មានដើមឈើពាក់ជាប់
+  },
+  {
+    id: 9,
+    question: "៩. តើអង្គរ ត្រូវបានទុកចោលក្នុងសម័យណា?",
+    options: ["A. សតវត្សទី៩", "B. សតវត្សទី១២", "C. សតវត្សទី១៥", "D. សតវត្សទី២០"],
+    correct: 2 // C. សតវត្សទី១៥
+  },
+  {
+    id: 10,
+    question: "១០. តើអង្គរវត្តត្រូវបានសាងសង់សម្រាប់អ្វីដំបូង?",
+    options: ["A. ព្រះពុទ្ធសាសនា", "B. ព្រះហិណ្ឌូសាសនា", "C. សាសនាគ្រិស្ដ", "D. មិនមានសាសនា"],
+    correct: 1 // B. ព្រះហិណ្ឌូសាសនា
   }
 ];
 
-let currentCategory = "all";
+let timerInterval;
+let timeLeft = 300; // កំណត់ ៥ នាទី (៥ x ៦០ = ៣០០ វិនាទី)
 
-// មុខងារបង្ហាញសៀវភៅលើអេក្រង់
-function displayBooks(bookArray) {
-  const bookGrid = document.getElementById("bookGrid");
-  bookGrid.innerHTML = "";
+// បង្ហាញសំណួរ QCM លើ អេក្រង់
+function renderQuestions() {
+  const container = document.getElementById("questionContainer");
+  container.innerHTML = "";
 
-  if (bookArray.length === 0) {
-    bookGrid.innerHTML = `<p style="color:#888; grid-column: 1/-1; text-align:center;">ពុំមានសៀវភៅក្នុងមុខវិជ្ជានេះទេ!</p>`;
-    return;
-  }
+  qcmQuestions.forEach((q, index) => {
+    let optionsHTML = "";
+    q.options.forEach((opt, optIndex) => {
+      optionsHTML += `
+        <label class="opt-label">
+          <input type="radio" name="q_${index}" value="${optIndex}">
+          <span>${opt}</span>
+        </label>
+      `;
+    });
 
-  bookArray.forEach((book) => {
-    const bookHTML = `
-      <div class="book-card">
-        <img src="${book.cover}" class="book-cover" alt="Cover" onerror="this.src='https://via.placeholder.com/200x250?text=No+Cover'">
-        <span class="book-badge">${book.category}</span>
-        <div class="book-title">${book.title}</div>
-        <div class="book-author">${book.author}</div>
-        <a href="${book.link}" target="_blank" rel="noopener noreferrer" class="btn-read">
-          <i class="fa-solid fa-book-open"></i> អានសៀវភៅ
-        </a>
+    container.innerHTML += `
+      <div class="q-card">
+        <div class="q-title">${q.question}</div>
+        ${optionsHTML}
       </div>
     `;
-    bookGrid.innerHTML += bookHTML;
   });
 }
 
-// មុខងារជ្រើសរើស Category
-function selectCategory(category) {
-  currentCategory = category;
-  const buttons = document.querySelectorAll(".cat-btn");
-  buttons.forEach(btn => btn.classList.remove("active"));
-  if (event) event.target.classList.add("active");
-  filterBooks();
+// ចាប់ផ្តើម Timer រាប់ថយក្រោយ ៥ នាទី
+function startTimer() {
+  clearInterval(timerInterval);
+  const timeDisplay = document.getElementById("timeDisplay");
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    
+    if (seconds < 10) seconds = "0" + seconds;
+    if (minutes < 10) minutes = "0" + minutes;
+
+    timeDisplay.innerText = `${minutes}:${seconds}`;
+
+    // ពេលអស់ម៉ោង
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("អស់ពេល ៥ នាទីហើយ! ប្រព័ន្ធនឹងបញ្ជូនចម្លើយដោយស្វ័យប្រវត្តិ។");
+      submitQcm();
+    }
+  }, 1000);
 }
 
-// មុខងារ Search
-function filterBooks() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
-  const filtered = books.filter(book => {
-    const matchesCategory = (currentCategory === "all") || (book.category === currentCategory);
-    const matchesSearch = book.title.toLowerCase().includes(query) || book.author.toLowerCase().includes(query);
-    return matchesCategory && matchesSearch;
+// បើក Modal QCM
+function openQcmModal() {
+  document.getElementById("qcmModal").classList.add("active");
+  document.getElementById("qcmBody").style.display = "block";
+  document.getElementById("qcmResult").style.display = "none";
+  timeLeft = 300; // Reset មក ៥ នាទីវិញ (300 seconds)
+  renderQuestions();
+  startTimer();
+}
+
+// បិទ Modal QCM
+function closeQcmModal() {
+  document.getElementById("qcmModal").classList.remove("active");
+  clearInterval(timerInterval);
+}
+
+// គណនាពិន្ទុ និងបញ្ជូនចម្លើយ
+function submitQcm() {
+  clearInterval(timerInterval);
+  let score = 0;
+
+  qcmQuestions.forEach((q, index) => {
+    const selectedOption = document.querySelector(`input[name="q_${index}"]:checked`);
+    if (selectedOption && parseInt(selectedOption.value) === q.correct) {
+      score++;
+    }
   });
-  displayBooks(filtered);
+
+  document.getElementById("qcmBody").style.display = "none";
+  document.getElementById("qcmResult").style.display = "block";
+  document.getElementById("scoreText").innerText = `អ្នកទទួលបាន ${score} / ${qcmQuestions.length} ពិន្ទុ!`;
 }
 
-// បើក/បិទ Modal បន្ថែមសៀវភៅ
-function openUploadModal() { document.getElementById("uploadModal").classList.add("active"); }
-function closeUploadModal() { document.getElementById("uploadModal").classList.remove("active"); }
-
-// បន្ថែមសៀវភៅបណ្តោះអាសន្នតាម Form
-function handleUpload(event) {
-  event.preventDefault();
-
-  const newBook = {
-    id: Date.now(),
-    title: document.getElementById("bookTitle").value,
-    category: document.getElementById("bookCategory").value,
-    author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
-    cover: document.getElementById("bookCoverUrl").value,
-    link: document.getElementById("bookPdfUrl").value
-  };
-
-  books.unshift(newBook);
-  filterBooks();
-
-  closeUploadModal();
-  document.getElementById("uploadForm").reset();
-  alert("បន្ថែមសៀវភៅបានជោគជ័យ!");
-}
-
-// ដំណើរការបង្ហាញសៀវភៅដំបូង
-displayBooks(books);
-  
+// ធ្វើម្តងទៀត
+function restartQcm() {
+  openQcmModal();
+                              }
+    

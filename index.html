@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទខ្មែរ (Khmer Text to Speech)</title>
+  <title>កម្មវិធីអានអត្ថបទខ្មែរ (TTS)</title>
   <link rel="stylesheet" href="style.css">
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- ResponsiveVoice Library (សម្រាប់អានភាសាខ្មែរ) -->
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
 </head>
 <body>
 
@@ -19,12 +15,10 @@
       <p>បញ្ចូលអក្សរខ្មែរខាងក្រោម រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
-    <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
     <div class="input-group">
       <textarea id="textInput" placeholder="សូមបញ្ចូលអត្ថបទខ្មែរនៅទីនេះ..."></textarea>
     </div>
 
-    <!-- សារ៉េល្បឿននៃការអាន -->
     <div class="controls-grid">
       <div class="control-card">
         <label for="rateRange"><i class="fa-solid fa-gauge-high"></i> ល្បឿនអាន: <span id="rateVal">1.0</span>x</label>
@@ -32,7 +26,6 @@
       </div>
     </div>
 
-    <!-- ប៊ូតុងបញ្ជា -->
     <div class="button-group">
       <button id="btnPlay" class="btn btn-play" onclick="speakText()">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង

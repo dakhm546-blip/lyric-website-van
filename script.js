@@ -1,4 +1,3 @@
-// បញ្ជីសៀវភៅដើម
 let books = [
   {
     title: "សៀវភៅឱសថសាស្ត្រ (Pharmacology)",
@@ -11,7 +10,15 @@ let books = [
 
 let currentCategory = "all";
 
-// បង្ហាញសៀវភៅ
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
+
 function displayBooks(bookArray) {
   const bookGrid = document.getElementById("bookGrid");
   bookGrid.innerHTML = "";
@@ -21,32 +28,30 @@ function displayBooks(bookArray) {
     return;
   }
 
-  bookArray.forEach(book => {
+  bookArray.forEach((book, index) => {
     const bookHTML = `
       <div class="book-card">
         <img src="${book.cover}" class="book-cover" alt="Cover">
         <span class="book-badge">${book.category}</span>
         <div class="book-title">${book.title}</div>
         <div class="book-author">${book.author}</div>
-        <a href="${book.link}" target="_blank" class="btn-read">
+        <button class="btn-read" onclick="openPdfModal(${index})">
           <i class="fa-solid fa-book-open"></i> អានសៀវភៅ
-        </a>
+        </button>
       </div>
     `;
     bookGrid.innerHTML += bookHTML;
   });
 }
 
-// តម្រងតាមមុខវិជ្ជា
 function selectCategory(category) {
   currentCategory = category;
   const buttons = document.querySelectorAll(".cat-btn");
   buttons.forEach(btn => btn.classList.remove("active"));
-  if (event) event.target.classList.add("active");
+  if(event) event.target.classList.add("active");
   filterBooks();
 }
 
-// Search & Filter
 function filterBooks() {
   const query = document.getElementById("searchInput").value.toLowerCase();
   const filtered = books.filter(book => {
@@ -57,40 +62,59 @@ function filterBooks() {
   displayBooks(filtered);
 }
 
-// បើក/បិទ Modal
+// បើក/បិទ Upload Form Modal
 function openUploadModal() { document.getElementById("uploadModal").classList.add("active"); }
 function closeUploadModal() { document.getElementById("uploadModal").classList.remove("active"); }
 
-// ដំណើរការ Upload ដោយប្រើ Blob URL (ការពារមិនឱ្យ Browser Block)
-function handleUpload(event) {
+// បើក/បិទ ផ្ទាំងអាន PDF
+function openPdfModal(index) {
+  const selectedBook = books[index];
+  document.getElementById("pdfTitle").innerText = selectedBook.title;
+  
+  // បញ្ចូល File PDF ទៅក្នុង iframe ផ្ទាល់ មិនឱ្យរត់ទៅ Tab ថ្មីនាំឱ្យ Block ឡើយ
+  document.getElementById("pdfViewer").src = selectedBook.link;
+  document.getElementById("pdfModal").classList.add("active");
+}
+
+function closePdfModal() {
+  document.getElementById("pdfModal").classList.remove("active");
+  document.getElementById("pdfViewer").src = "";
+}
+
+async function handleUpload(event) {
   event.preventDefault();
 
-  const coverFile = document.getElementById("bookCoverFile").files[0];
-  const pdfFile = document.getElementById("bookPdfFile").files[0];
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.innerText = "កំពុងរក្សាទុក...";
+  submitBtn.disabled = true;
 
-  if (!coverFile || !pdfFile) {
-    alert("សូមជ្រើសរើស File រូបភាព និង File PDF ឱ្យបានត្រឹមត្រូវ!");
-    return;
+  try {
+    const coverFile = document.getElementById("bookCoverFile").files[0];
+    const pdfFile = document.getElementById("bookPdfFile").files[0];
+
+    const coverDataUrl = await readFileAsDataURL(coverFile);
+    const pdfDataUrl = await readFileAsDataURL(pdfFile);
+
+    const newBook = {
+      title: document.getElementById("bookTitle").value,
+      category: document.getElementById("bookCategory").value,
+      author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
+      cover: coverDataUrl,
+      link: pdfDataUrl
+    };
+
+    books.unshift(newBook);
+    filterBooks();
+
+    closeUploadModal();
+    document.getElementById("uploadForm").reset();
+    alert("បន្ថែមសៀវភៅជោគជ័យ!");
+  } catch (error) {
+    alert("មានបញ្ហាក្នុងការអាប់ឡូត File!");
+  } finally {
+    submitBtn.innerText = "រក្សាទុកសៀវភៅ";
+    submitBtn.disabled = false;
   }
-
-  // បង្កើត Blob URL ផ្ទាល់ពី File ក្នុងទូរស័ព្ទ (លឿន និងមិនគាំង)
-  const coverUrl = URL.createObjectURL(coverFile);
-  const pdfUrl = URL.createObjectURL(pdfFile);
-
-  const newBook = {
-    title: document.getElementById("bookTitle").value,
-    category: document.getElementById("bookCategory").value,
-    author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
-    cover: coverUrl,
-    link: pdfUrl
-  };
-
-  books.unshift(newBook);
-  filterBooks();
-
-  closeUploadModal();
-  document.getElementById("uploadForm").reset();
-  alert("បន្ថែមសៀវភៅជោគជ័យ!");
 }
 
 displayBooks(books);

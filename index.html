@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទ (TTS)</title>
+  <title>កម្មវិធីអានអត្ថបទ (Native TTS)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- ផ្លូវកាត់ Script ផ្លូវការសម្រាប់អានខ្មែរ និងអង់គ្លេស -->
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
 </head>
 <body>
 
@@ -18,14 +15,14 @@
       <p>ជ្រើសរើសភាសា បញ្ចូលអត្ថបទ រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
-    <!-- ជ្រើសរើសភាសា -->
+    <!-- ប្រអប់ជ្រើសរើសភាសា -->
     <div style="margin-bottom: 15px;">
       <label for="langSelect" style="color: #cbd5e1; font-size: 14px; display: block; margin-bottom: 5px;">
         <i class="fa-solid fa-language"></i> ជ្រើសរើសភាសា៖
       </label>
       <select id="langSelect" style="width: 100%; padding: 10px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 8px; outline: none;">
-        <option value="Khmer Female">ភាសាខ្មែរ (Khmer)</option>
-        <option value="UK English Female">ភាសាអង់គ្លេស (US/UK English)</option>
+        <option value="en-US">ភាសាអង់គ្លេស (English)</option>
+        <option value="km-KH">ភាសាខ្មែរ (Khmer)</option>
       </select>
     </div>
 
@@ -36,48 +33,75 @@
 
     <!-- ប៊ូតុងបញ្ជា -->
     <div class="button-group" style="margin-top: 15px;">
-      <button id="btnPlay" class="btn btn-play" onclick="playSpeech()">
+      <button id="btnPlay" class="btn btn-play" onclick="speakText()">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-      <button id="btnStop" class="btn btn-stop" onclick="stopSpeech()">
+      <button id="btnStop" class="btn btn-stop" onclick="stopText()">
         <i class="fa-solid fa-square"></i> បញ្ឈប់
       </button>
-      <button id="btnClear" class="btn btn-clear" onclick="clearAll()">
+      <button id="btnClear" class="btn btn-clear" onclick="clearText()">
         <i class="fa-solid fa-trash-can"></i> លុបអក្សរ
       </button>
     </div>
   </div>
 
   <script>
-    function playSpeech() {
+    // មុខងារចាក់សំឡេងតាម Native Browser Engine
+    function speakText() {
       const text = document.getElementById('textInput').value.trim();
-      const selectedVoice = document.getElementById('langSelect').value;
+      const selectedLang = document.getElementById('langSelect').value;
 
       if (!text) {
-        alert("សូមបញ្ចូលអត្ថបទជាមុនសិន! / Please enter text!");
+        alert("សូមបញ្ចូលអត្ថបទជាមុនសិន!");
         return;
       }
 
-      // បញ្ឈប់សំឡេងចាស់ប្រសិនបើកំពុងចាក់
-      if (responsiveVoice.isPlaying()) {
-        responsiveVoice.cancel();
+      // ប្រសិនបើ Browser មិន Support Web Speech API ទេ
+      if (!('speechSynthesis' in window)) {
+        alert("Browser របស់អ្នកមិនគាំទ្រការចាក់សំឡេងនេះទេ!");
+        return;
       }
 
-      // ចាក់សំឡេងតាមភាសាដែលបានជ្រើសរើស
-      responsiveVoice.speak(text, selectedVoice);
+      // បញ្ឈប់សំឡេងដែលកំពុងចាក់ចាស់ៗ
+      window.speechSynthesis.cancel();
+
+      // បង្កើត Object អានអត្ថបទ
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = selectedLang;
+      utterance.rate = 0.9; // ល្បឿនអានល្មម
+
+      // ស្វែងរកសំឡេងដែលត្រូវគ្នានៅក្នុងទូរស័ព្ទ
+      const voices = window.speechSynthesis.getVoices();
+      const matchedVoice = voices.find(v => v.lang.includes(selectedLang) || v.lang.startsWith(selectedLang.split('-')[0]));
+      
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
+      }
+
+      // បញ្ជាឱ្យទូរស័ព្ទ/Browser បញ្ចេញសំឡេង
+      window.speechSynthesis.speak(utterance);
     }
 
-    function stopSpeech() {
-      if (responsiveVoice.isPlaying()) {
-        responsiveVoice.cancel();
+    // បញ្ឈប់សំឡេង
+    function stopText() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
       }
     }
 
-    function clearAll() {
-      stopSpeech();
+    // លុបអក្សរ
+    function clearText() {
+      stopText();
       document.getElementById('textInput').value = '';
+    }
+
+    // លុប Cache នៃការស្វែងរកសំឡេង
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
     }
   </script>
 </body>
-      </html>
-        
+  </html>
+  

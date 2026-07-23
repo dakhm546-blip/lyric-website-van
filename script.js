@@ -1,124 +1,131 @@
-const songs = [
-  {
-    title: "បទទី ១ - ស្វាគមន៍",
-    artist: "តន្ត្រីសម្រាកអារម្មណ៍",
-    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    lyrics: [
-      { time: 0, text: "🎵 ស្វាគមន៍មកកាន់ KhmerLyric Studio 🎵" },
-      { time: 5, text: "សូមរីករាយកម្សាន្តជាមួយតន្ត្រី និងអត្ថបទចម្រៀង" },
-      { time: 10, text: "ឃ្លាទី ១៖ ភ្លេងចាប់ផ្តើមលេងយ៉ាងរលូន..." },
-      { time: 15, text: "ឃ្លាទី ២៖ អត្ថបទចម្រៀងលោតតាមចង្វាក់ភ្លេង..." },
-      { time: 20, text: "🎶 (ភ្លេងកណ្តាល) 🎶" }
-    ]
-  },
-  {
-    title: "បទទី ២ - ចង្វាក់រហ័ស",
-    artist: "បទភ្លេងសប្បាយៗ",
-    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    lyrics: [
-      { time: 0, text: "🔥 ចាប់ផ្តើមបទទី ២ 🔥" },
-      { time: 4, text: "ចង្វាក់ភ្លេងរហ័ស និងសប្បាយៗ" },
-      { time: 9, text: "ច្រៀងតាមទាំងអស់គ្នា!" },
-      { time: 14, text: "🎶 (ភ្លេង) 🎶" }
-    ]
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #121212;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background-color: #000000;
+  border-bottom: 1px solid #282828;
+}
+
+.logo i {
+  font-size: 28px;
+  color: #1db954;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-logout {
+  background-color: #282828;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-logout:hover {
+  background-color: #3e3e3e;
+}
+
+/* Main Layout */
+.app-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  padding: 20px;
+  flex: 1;
+}
+
+/* Sidebar Playlist */
+.sidebar {
+  background-color: #181818;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.sidebar h3 {
+  margin-bottom: 15px;
+  color: #1db954;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: 0.2s;
+}
+
+.sidebar li:hover, .sidebar li.active {
+  background-color: #282828;
+}
+
+.sidebar li.active {
+  border-left: 4px solid #1db954;
+}
+
+/* Player Section */
+.player-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.player-card {
+  background-color: #181818;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.song-info h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.song-info p {
+  color: #b3b3b3;
+  margin-bottom: 20px;
+}
+
+audio {
+  width: 100%;
+  max-width: 500px;
+  outline: none;
+}
+
+/* Responsive សម្រាប់អេក្រង់ទូរសព្ទ */
+@media (max-width: 768px) {
+  .app-container {
+    grid-template-columns: 1fr;
   }
-];
-
-let currentSongIndex = 0;
-const audio = document.getElementById('audioPlayer');
-const playBtn = document.getElementById('playBtn');
-const songTitle = document.getElementById('songTitle');
-const artistName = document.getElementById('artistName');
-const lyricsBox = document.getElementById('lyricsBox');
-const progressBar = document.getElementById('progressBar');
-
-function loadSong(index) {
-  currentSongIndex = index;
-  const song = songs[index];
-  songTitle.innerText = song.title;
-  artistName.innerText = song.artist;
-  audio.src = song.src;
-
-  // Render Lyrics
-  lyricsBox.innerHTML = '';
-  song.lyrics.forEach((item, i) => {
-    const p = document.createElement('p');
-    p.classList.add('lyric-line');
-    if (i === 0) p.classList.add('active');
-    p.setAttribute('data-time', item.time);
-    p.innerText = item.text;
-    lyricsBox.appendChild(p);
-  });
-
-  // Highlight Sidebar Active
-  const listItems = document.querySelectorAll('#playlist li');
-  listItems.forEach((li, i) => {
-    li.classList.toggle('active', i === index);
-  });
 }
-
-function togglePlay() {
-  if (audio.paused) {
-    audio.play();
-    playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-  } else {
-    audio.pause();
-    playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-  }
-}
-
-function selectSong(index) {
-  loadSong(index);
-  audio.play();
-  playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-}
-
-function prevSong() {
-  currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-  selectSong(currentSongIndex);
-}
-
-function nextSong() {
-  currentSongIndex = (currentSongIndex + 1) % songs.length;
-  selectSong(currentSongIndex);
-}
-
-// Update Lyrics and Progress Bar
-audio.addEventListener('timeupdate', () => {
-  const currentTime = audio.currentTime;
-  const duration = audio.duration;
-
-  if (duration) {
-    progressBar.style.width = `${(currentTime / duration) * 100}%`;
-  }
-
-  const lines = document.querySelectorAll('.lyric-line');
-  lines.forEach((line, index) => {
-    const lineTime = parseFloat(line.getAttribute('data-time'));
-    const nextLineTime = lines[index + 1] ? parseFloat(lines[index + 1].getAttribute('data-time')) : Infinity;
-
-    if (currentTime >= lineTime && currentTime < nextLineTime) {
-      lines.forEach(l => l.classList.remove('active'));
-      line.classList.add('active');
-      line.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  });
-});
-
-function setProgress(e) {
-  const width = e.currentTarget.clientWidth;
-  const clickX = e.offsetX;
-  const duration = audio.duration;
-  audio.currentTime = (clickX / width) * duration;
-}
-
-function searchSong() {
-  const query = document.getElementById('searchInput').value.toLowerCase();
-  const listItems = document.querySelectorAll('#playlist li');
-
-  songs.forEach((song, i) => {
-    const match = song.title.toLowerCase().includes(query) || song.artist.toLowerCase().includes(query);
-    listItems[i].style.display = match ? 'flex' : 'none';
-  });
-  }
-      
+  

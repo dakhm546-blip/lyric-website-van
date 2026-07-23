@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទខ្មែរ</title>
+  <title>កម្មវិធីអានអត្ថបទ (ខ្មែរ & អង់គ្លេស)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,21 +11,34 @@
 
   <div class="tts-container">
     <div class="tts-header">
-      <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទខ្មែរ (TTS)</h2>
-      <p>បញ្ចូលអក្សរខ្មែរ រួចចុច "ចាក់សំឡេង"</p>
+      <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទ (TTS)</h2>
+      <p>ជ្រើសរើសភាសា បញ្ចូលអត្ថបទ រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
+    <!-- ប្រអប់ជ្រើសរើសភាសា -->
+    <div style="margin-bottom: 15px;">
+      <label for="langSelect" style="color: #cbd5e1; font-size: 14px; display: block; margin-bottom: 5px;">
+        <i class="fa-solid fa-language"></i> ជ្រើសរើសភាសា៖
+      </label>
+      <select id="langSelect" style="width: 100%; padding: 10px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 8px; outline: none;">
+        <option value="Khmer">ភាសាខ្មែរ (Khmer)</option>
+        <option value="Brian">ភាសាអង់គ្លេស (English - Male)</option>
+        <option value="Amy">ភាសាអង់គ្លេស (English - Female)</option>
+      </select>
+    </div>
+
+    <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
     <div class="input-group">
-      <textarea id="textInput" placeholder="សូមបញ្ចូលអត្ថបទខ្មែរនៅទីនេះ..."></textarea>
+      <textarea id="textInput" placeholder="Enter text or បញ្ចូលអត្ថបទ..."></textarea>
     </div>
 
-    <!-- Audio Player សម្រាប់ចាក់សំឡេង direct -->
+    <!-- Audio Player -->
     <div style="margin: 15px 0;">
       <audio id="audioPlayer" controls style="width: 100%; display: none;"></audio>
     </div>
 
     <div class="button-group">
-      <button id="btnPlay" class="btn btn-play" onclick="playKhmerAudio()">
+      <button id="btnPlay" class="btn btn-play" onclick="playAudio()">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
       <button id="btnClear" class="btn btn-clear" onclick="clearAll()">
@@ -35,21 +48,22 @@
   </div>
 
   <script>
-    function playKhmerAudio() {
+    function playAudio() {
       const text = document.getElementById('textInput').value.trim();
+      const voice = document.getElementById('langSelect').value;
       const player = document.getElementById('audioPlayer');
 
       if (!text) {
-        alert("សូមបញ្ចូលអត្ថបទខ្មែរជាមុនសិន!");
+        alert("សូមបញ្ចូលអត្ថបទជាមុនសិន! / Please enter text!");
         return;
       }
 
-      // ប្រើ StreamElements API សម្រាប់បង្កើត Audio Link ភាសាខ្មែរ
       const cleanText = encodeURIComponent(text);
-      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=Khmer&text=${cleanText}`;
+      // ទាញយកសំឡេងតាមភាសាដែលបានជ្រើសរើស (Khmer, English Male, ឬ English Female)
+      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${cleanText}`;
 
       player.src = audioUrl;
-      player.style.display = "block"; // បង្ហាញ Player ពេលចុច
+      player.style.display = "block";
       player.play();
     }
 
@@ -62,4 +76,5 @@
     }
   </script>
 </body>
-</html>
+  </html>
+  

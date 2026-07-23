@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទ (ខ្មែរ & អង់គ្លេស)</title>
+  <title>កម្មវិធីអានអត្ថបទ (TTS)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- ផ្លូវកាត់ Script ផ្លូវការសម្រាប់អានខ្មែរ និងអង់គ្លេស -->
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
 </head>
 <body>
 
@@ -15,15 +18,14 @@
       <p>ជ្រើសរើសភាសា បញ្ចូលអត្ថបទ រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
-    <!-- ប្រអប់ជ្រើសរើសភាសា -->
+    <!-- ជ្រើសរើសភាសា -->
     <div style="margin-bottom: 15px;">
       <label for="langSelect" style="color: #cbd5e1; font-size: 14px; display: block; margin-bottom: 5px;">
         <i class="fa-solid fa-language"></i> ជ្រើសរើសភាសា៖
       </label>
       <select id="langSelect" style="width: 100%; padding: 10px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 8px; outline: none;">
-        <option value="Khmer">ភាសាខ្មែរ (Khmer)</option>
-        <option value="Brian">ភាសាអង់គ្លេស (English - Male)</option>
-        <option value="Amy">ភាសាអង់គ្លេស (English - Female)</option>
+        <option value="Khmer Female">ភាសាខ្មែរ (Khmer)</option>
+        <option value="UK English Female">ភាសាអង់គ្លេស (US/UK English)</option>
       </select>
     </div>
 
@@ -32,14 +34,13 @@
       <textarea id="textInput" placeholder="Enter text or បញ្ចូលអត្ថបទ..."></textarea>
     </div>
 
-    <!-- Audio Player -->
-    <div style="margin: 15px 0;">
-      <audio id="audioPlayer" controls style="width: 100%; display: none;"></audio>
-    </div>
-
-    <div class="button-group">
-      <button id="btnPlay" class="btn btn-play" onclick="playAudio()">
+    <!-- ប៊ូតុងបញ្ជា -->
+    <div class="button-group" style="margin-top: 15px;">
+      <button id="btnPlay" class="btn btn-play" onclick="playSpeech()">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
+      </button>
+      <button id="btnStop" class="btn btn-stop" onclick="stopSpeech()">
+        <i class="fa-solid fa-square"></i> បញ្ឈប់
       </button>
       <button id="btnClear" class="btn btn-clear" onclick="clearAll()">
         <i class="fa-solid fa-trash-can"></i> លុបអក្សរ
@@ -48,33 +49,35 @@
   </div>
 
   <script>
-    function playAudio() {
+    function playSpeech() {
       const text = document.getElementById('textInput').value.trim();
-      const voice = document.getElementById('langSelect').value;
-      const player = document.getElementById('audioPlayer');
+      const selectedVoice = document.getElementById('langSelect').value;
 
       if (!text) {
         alert("សូមបញ្ចូលអត្ថបទជាមុនសិន! / Please enter text!");
         return;
       }
 
-      const cleanText = encodeURIComponent(text);
-      // ទាញយកសំឡេងតាមភាសាដែលបានជ្រើសរើស (Khmer, English Male, ឬ English Female)
-      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${cleanText}`;
+      // បញ្ឈប់សំឡេងចាស់ប្រសិនបើកំពុងចាក់
+      if (responsiveVoice.isPlaying()) {
+        responsiveVoice.cancel();
+      }
 
-      player.src = audioUrl;
-      player.style.display = "block";
-      player.play();
+      // ចាក់សំឡេងតាមភាសាដែលបានជ្រើសរើស
+      responsiveVoice.speak(text, selectedVoice);
+    }
+
+    function stopSpeech() {
+      if (responsiveVoice.isPlaying()) {
+        responsiveVoice.cancel();
+      }
     }
 
     function clearAll() {
-      const player = document.getElementById('audioPlayer');
+      stopSpeech();
       document.getElementById('textInput').value = '';
-      player.pause();
-      player.currentTime = 0;
-      player.style.display = "none";
     }
   </script>
 </body>
-  </html>
-  
+      </html>
+        

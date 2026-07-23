@@ -1,4 +1,4 @@
-// បញ្ជីទិន្នន័យសៀវភៅដើម (Default Books)
+// បញ្ជីសៀវភៅដើម
 let books = [
   {
     title: "សៀវភៅឱសថសាស្ត្រ (Pharmacology)",
@@ -6,17 +6,20 @@ let books = [
     author: "អ្នកនិពន្ធ៖ វេជ្ជបណ្ឌិត",
     cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400",
     link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-  },
-  {
-    title: "កាយវិភាគសាស្ត្រ (Anatomy)",
-    category: "កាយវិភាគសាស្ត្រ",
-    author: "អ្នកនិពន្ធ៖ Va Socheat",
-    cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400",
-    link: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
   }
 ];
 
 let currentCategory = "all";
+
+// មុខងារអាន File ទៅជា Base64 URL
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
 
 // បង្ហាញសៀវភៅ
 function displayBooks(bookArray) {
@@ -42,58 +45,66 @@ function displayBooks(bookArray) {
   });
 }
 
-// តម្រងតាមមុខវិជ្ជា (Filter Category)
+// តម្រងតាមមុខវិជ្ជា
 function selectCategory(category) {
   currentCategory = category;
-  
-  // ប្តូរ Highlight ប៊ូតុង Category
   const buttons = document.querySelectorAll(".cat-btn");
   buttons.forEach(btn => btn.classList.remove("active"));
   event.target.classList.add("active");
-
   filterBooks();
 }
 
-// មុខងារ Filter រួម (ទាំង Category និង Search Input)
+// Search & Filter
 function filterBooks() {
   const query = document.getElementById("searchInput").value.toLowerCase();
-  
   const filtered = books.filter(book => {
     const matchesCategory = (currentCategory === "all") || (book.category === currentCategory);
     const matchesSearch = book.title.toLowerCase().includes(query) || book.author.toLowerCase().includes(query);
     return matchesCategory && matchesSearch;
   });
-
   displayBooks(filtered);
 }
 
-// បើក/បិទ Modal Upload
+// បើក/បិទ Modal
 function openUploadModal() { document.getElementById("uploadModal").classList.add("active"); }
 function closeUploadModal() { document.getElementById("uploadModal").classList.remove("active"); }
 
-// Handle ការ Upload/បន្ថែមសៀវភៅថ្មី
-function handleUpload(event) {
+// ដំណើរការ Upload PDF & Cover រួចបង្ហាញភ្លាមៗ
+async function handleUpload(event) {
   event.preventDefault();
 
-  const newBook = {
-    title: document.getElementById("bookTitle").value,
-    category: document.getElementById("bookCategory").value,
-    author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
-    cover: document.getElementById("bookCover").value,
-    link: document.getElementById("bookLink").value
-  };
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.innerText = "កំពុងរក្សាទុក...";
+  submitBtn.disabled = true;
 
-  // បន្ថែមសៀវភៅថ្មីទៅដើម Array
-  books.unshift(newBook);
-  
-  // Update អេក្រង់ឡើងវិញ
-  filterBooks();
-  
-  // បិទ Modal & Clear Form
-  closeUploadModal();
-  document.getElementById("uploadForm").reset();
-  alert("បន្ថែមសៀវភៅជោគជ័យ!");
+  try {
+    const coverFile = document.getElementById("bookCoverFile").files[0];
+    const pdfFile = document.getElementById("bookPdfFile").files[0];
+
+    // អានរូបភាព និង File PDF
+    const coverDataUrl = await readFileAsDataURL(coverFile);
+    const pdfDataUrl = await readFileAsDataURL(pdfFile);
+
+    const newBook = {
+      title: document.getElementById("bookTitle").value,
+      category: document.getElementById("bookCategory").value,
+      author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
+      cover: coverDataUrl,
+      link: pdfDataUrl
+    };
+
+    books.unshift(newBook);
+    filterBooks();
+
+    closeUploadModal();
+    document.getElementById("uploadForm").reset();
+    alert("អាប់ឡូតសៀវភៅ PDF ជោគជ័យ!");
+  } catch (error) {
+    alert("មានបញ្ហាក្នុងការអាប់ឡូត File សូមសាកល្បងម្តងទៀត!");
+  } finally {
+    submitBtn.innerText = "រក្សាទុកសៀវភៅ";
+    submitBtn.disabled = false;
+  }
 }
 
-// បង្ហាញសៀវភៅដំបូង
 displayBooks(books);

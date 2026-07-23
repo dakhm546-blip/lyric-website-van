@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Va Socheat - E-Book Library</title>
+  <title>Va Socheat - Smart E-Library</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -19,26 +19,81 @@
       <span>Socheat Library</span>
     </div>
     
-    <!-- ប្រអប់ស្វែងរកសៀវភៅ -->
-    <div class="search-box">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="searchInput" onkeyup="searchBooks()" placeholder="ស្វែងរកសៀវភៅ...">
+    <div class="header-actions">
+      <!-- ប្រអប់ស្វែងរក -->
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" onkeyup="filterBooks()" placeholder="ស្វែងរកសៀវភៅ...">
+      </div>
+
+      <!-- ប៊ូតុង បន្ថែមសៀវភៅ -->
+      <button class="btn-add" onclick="openUploadModal()"><i class="fa-solid fa-plus"></i> បន្ថែមសៀវភៅ</button>
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="main-container">
-    <div class="section-title">
-      <h2>📚 បញ្ជីសៀវភៅទាំងអស់</h2>
-      <p>ជ្រើសរើសសៀវភៅដែលអ្នកចង់អាន ឬទាញយក</p>
+    
+    <!-- ផ្នែកជ្រើសរើសមុខវិជ្ជា (Categories) -->
+    <div class="category-container">
+      <h3><i class="fa-solid fa-layer-group"></i> មុខវិជ្ជា៖</h3>
+      <div class="category-buttons" id="categoryButtons">
+        <button class="cat-btn active" onclick="selectCategory('all')">ទាំងអស់</button>
+        <button class="cat-btn" onclick="selectCategory('ឱសថសាស្ត្រ')">💊 ឱសថសាស្ត្រ</button>
+        <button class="cat-btn" onclick="selectCategory('កាយវិភាគសាស្ត្រ')">🫀 កាយវិភាគសាស្ត្រ</button>
+        <button class="cat-btn" onclick="selectCategory('ព័ត៌មានវិទ្យា')">💻 ព័ត៌មានវិទ្យា</button>
+        <button class="cat-btn" onclick="selectCategory('អភិវឌ្ឍខ្លួន')">💡 អភិវឌ្ឍខ្លួន</button>
+      </div>
     </div>
 
-    <!-- កន្លែងបង្ហាញសៀវភៅ (Book Grid) -->
+    <!-- កន្លែងបង្ហាញសៀវភៅ -->
     <div class="book-grid" id="bookGrid">
-      <!-- សៀវភៅនឹងបង្ហាញនៅទីនេះតាមរយៈ JavaScript -->
+      <!-- សៀវភៅនឹងបង្ហាញនៅទីនេះ -->
     </div>
+
   </main>
+
+  <!-- Modal/Pop-up សម្រាប់ Upload/បន្ថែមសៀវភៅថ្មី -->
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal-card">
+      <button class="btn-close" onclick="closeUploadModal()"><i class="fa-solid fa-xmark"></i></button>
+      <h2><i class="fa-solid fa-file-circle-plus"></i> បន្ថែមសៀវភៅថ្មី</h2>
+      <form id="uploadForm" onsubmit="handleUpload(event)">
+        <div class="input-group">
+          <label>ចំណងជើងសៀវភៅ</label>
+          <input type="text" id="bookTitle" placeholder="ឧទាហរណ៍៖ មូលដ្ឋានគ្រឹះ ECG" required>
+        </div>
+
+        <div class="input-group">
+          <label>មុខវិជ្ជា</label>
+          <select id="bookCategory" required>
+            <option value="ឱសថសាស្ត្រ">💊 ឱសថសាស្ត្រ</option>
+            <option value="កាយវិភាគសាស្ត្រ">🫀 កាយវិភាគសាស្ត្រ</option>
+            <option value="ព័ត៌មានវិទ្យា">💻 ព័ត៌មានវិទ្យា</option>
+            <option value="អភិវឌ្ឍខ្លួន">💡 អភិវឌ្ឍខ្លួន</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>ឈ្មោះអ្នកនិពន្ធ</label>
+          <input type="text" id="bookAuthor" placeholder="ឧទាហរណ៍៖ Dr. Socheat" required>
+        </div>
+
+        <div class="input-group">
+          <label>Link រូបភាព Cover (URL)</label>
+          <input type="url" id="bookCover" placeholder="https://example.com/cover.jpg" required>
+        </div>
+
+        <div class="input-group">
+          <label>Link File PDF សៀវភៅ (URL)</label>
+          <input type="url" id="bookLink" placeholder="https://example.com/book.pdf" required>
+        </div>
+
+        <button type="submit" class="btn-submit">រក្សាទុកសៀវភៅ</button>
+      </form>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
-</html>
+  </html>
+  

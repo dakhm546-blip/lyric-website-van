@@ -3,90 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Music & Lyrics Player</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Spotify Web Player</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+  </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      <i class="fa-solid fa-music"></i>
-    </div>
-    <div class="user-profile" id="userProfile">
-      <span id="userName">អ្នកប្រើប្រាស់</span>
-      <button onclick="logout()" class="btn-logout">ចាកចេញ</button>
-    </div>
-  </header>
+  <!-- Spotify Web Player Full Frame -->
+  <iframe 
+    src="https://open.spotify.com/embed" 
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+    loading="lazy">
+  </iframe>
 
-  <!-- Main App Layout -->
-  <div class="app-container">
-
-    <!-- Left Sidebar: Playlist -->
-    <aside class="sidebar">
-      <h3><i class="fa-solid fa-list-ul"></i> បញ្ជីចម្រៀង</h3>
-      <ul id="playlist">
-        <li onclick="selectSong(0)" class="active">
-          <i class="fa-solid fa-compact-disc"></i>
-          <div>
-            <h4>បទទី ១ - ស្វាគមន៍</h4>
-            <p>តន្ត្រីសម្រាកអារម្មណ៍</p>
-          </div>
-        </li>
-        <li onclick="selectSong(1)">
-          <i class="fa-solid fa-compact-disc"></i>
-          <div>
-            <h4>បទទី ២ - ចង្វាក់រហ័ស</h4>
-            <p>បទភ្លេងសប្បាយៗ</p>
-          </div>
-        </li>
-      </ul>
-    </aside>
-
-    <!-- Spotify Section (កន្លែងដាក់អាល់ប៊ុម និងបទចម្រៀង Spotify) -->
-    <section class="spotify-section" style="display: flex; flex-direction: column; gap: 15px; margin: 15px 0;">
-      
-      <!-- Spotify បទទី ១ (មុន) -->
-      <iframe 
-        style="border-radius:12px" 
-        src="https://open.spotify.com/embed/track/1LQHFV3h3Sq5GtHOPEznSn?utm_source=generator" 
-        width="100%" 
-        height="152" 
-        frameBorder="0" 
-        allowfullscreen="" 
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-        loading="lazy">
-      </iframe>
-
-      <!-- Spotify អាល់ប៊ុមថ្មី (ដែលអ្នកទើបផ្ញើមក) -->
-      <iframe 
-        style="border-radius:12px" 
-        src="https://open.spotify.com/embed/album/50FfMzzXAiUYYbIrUvRT8V?utm_source=generator" 
-        width="100%" 
-        height="352" 
-        frameBorder="0" 
-        allowfullscreen="" 
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-        loading="lazy">
-      </iframe>
-
-    </section>
-
-    <!-- Center: Main Player & Lyrics -->
-    <main class="player-section">
-      <div class="player-card">
-        <div class="song-info">
-          <h2 id="songTitle">បទទី ១ - ស្វាគមន៍</h2>
-          <p id="artistName">តន្ត្រីសម្រាកអារម្មណ៍</p>
-        </div>
-
-        <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" controls></audio>
-      </div>
-    </main>
-
-  </div>
-
-  <script src="script.js"></script>
 </body>
-  </html>
-        
+</html>

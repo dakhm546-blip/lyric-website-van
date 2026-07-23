@@ -9,14 +9,11 @@ body {
   background-color: #0b0c10;
   color: #ffffff;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-/* អក្សរឈ្មោះរំលេចនៅ Background */
+/* Background Watermark */
 .bg-watermark {
   position: fixed;
   top: 50%;
@@ -35,99 +32,136 @@ body {
   user-select: none;
 }
 
-/* ប្រអប់ម៉ាស៊ីនគិតលេខ */
-.calculator-container {
+/* Header */
+header {
   position: relative;
-  z-index: 1;
-  background: rgba(24, 24, 24, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 25px;
-  border-radius: 24px;
-  box-shadow: 0 15px 35px rgba(0, 242, 254, 0.15);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(18, 18, 18, 0.8);
   backdrop-filter: blur(10px);
-  width: 100%;
-  max-width: 340px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.calculator-header {
+.logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 16px;
+  gap: 12px;
+  font-size: 22px;
   font-weight: bold;
   color: #00f2fe;
-  margin-bottom: 20px;
 }
 
-/* អេក្រង់បង្ហាញទិន្នន័យ */
-.display input {
+.search-box {
+  display: flex;
+  align-items: center;
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 15px;
+  border-radius: 20px;
   width: 100%;
-  height: 60px;
-  background: #121212;
-  border: 1px solid #333;
-  border-radius: 12px;
-  color: #00ff87;
-  font-size: 28px;
-  text-align: right;
-  padding: 0 15px;
-  margin-bottom: 20px;
-  outline: none;
+  max-width: 300px;
 }
 
-/* គ្រោងប៊ូតុង */
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+.search-box i {
+  color: #888;
+  margin-right: 10px;
 }
 
-.btn {
-  height: 55px;
+.search-box input {
+  background: transparent;
   border: none;
-  border-radius: 12px;
-  background: #252525;
+  outline: none;
   color: #fff;
-  font-size: 20px;
+  width: 100%;
+}
+
+/* Main Grid */
+.main-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  margin-bottom: 30px;
+}
+
+.section-title h2 {
+  font-size: 28px;
+  color: #00ff87;
+  margin-bottom: 5px;
+}
+
+.section-title p {
+  color: #aaa;
+}
+
+/* Grid រៀបសៀវភៅ */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.book-card {
+  background: rgba(24, 24, 24, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+  backdrop-filter: blur(5px);
+}
+
+.book-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 242, 254, 0.25);
+  border-color: #00f2fe;
+}
+
+.book-cover {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.book-title {
+  font-size: 16px;
   font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn:hover {
-  background: #333;
-}
-
-.btn:active {
-  transform: scale(0.95);
-}
-
-.btn-action {
-  background: #ff4757;
+  margin-bottom: 5px;
   color: #fff;
 }
 
-.btn-action:hover {
-  background: #ff6b81;
+.book-author {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 15px;
+  flex-grow: 1;
 }
 
-.btn-operator {
-  background: #2ed573;
+.btn-read {
+  display: block;
+  text-align: center;
+  background: linear-gradient(45deg, #00f2fe, #00ff87);
   color: #000;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 8px;
+  transition: 0.3s;
 }
 
-.btn-operator:hover {
-  background: #7bed9f;
-}
-
-.btn-equal {
-  background: linear-gradient(45deg, #00f2fe, #4facfe);
-  color: #000;
-}
-
-.btn-equal:hover {
+.btn-read:hover {
   opacity: 0.9;
-}
-
-.btn-zero {
-  grid-column: span 2;
   }
+  

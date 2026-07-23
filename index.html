@@ -10,132 +10,81 @@
 </head>
 <body>
 
+  <!-- Header Section -->
   <header>
     <div class="logo">
       <i class="fa-solid fa-music"></i> <span>KhmerLyric</span>
     </div>
-    <div class="user-profile" id="userProfile" style="display: none;">
-      <span id="userName">អ្នកប្រើប្រាស់</span>
-      <button onclick="logout()" class="btn-logout">ចាកចេញ</button>
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="searchInput" onkeyup="searchSong()" placeholder="ស្វែងរកបទចម្រៀង...">
+    </div>
+    <div class="user-profile" id="userProfile">
+      <i class="fa-solid fa-circle-user"></i>
+      <span id="userName">ភ្ញៀវ</span>
     </div>
   </header>
 
-  <div class="auth-container" id="authContainer">
-    <div class="auth-box">
-      <h2><i class="fa-solid fa-lock"></i> ចូលប្រើប្រាស់</h2>
-      <p>សូមចូលប្រើប្រាស់ដើម្បីរីករាយជាមួយតន្ត្រី</p>
+  <!-- Main App Layout -->
+  <div class="app-container">
+    
+    <!-- Left Sidebar: Playlist -->
+    <aside class="sidebar">
+      <h3><i class="fa-solid fa-list-ul"></i> បញ្ជីបទចម្រៀង</h3>
+      <ul id="playlist">
+        <li onclick="selectSong(0)" class="active">
+          <i class="fa-solid fa-compact-disc"></i>
+          <div>
+            <h4>បទទី ១ - ស្វាគមន៍</h4>
+            <p>តន្ត្រីសម្រាកអារម្មណ៍</p>
+          </div>
+        </li>
+        <li onclick="selectSong(1)">
+          <i class="fa-solid fa-compact-disc"></i>
+          <div>
+            <h4>បទទី ២ - ចង្វាក់រហ័ស</h4>
+            <p>បទភ្លេងសប្បាយៗ</p>
+          </div>
+        </li>
+      </ul>
+    </aside>
 
-      <button class="btn-auth btn-google" onclick="loginWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-        បន្តជាមួយ Google
-      </button>
-
-      <div class="divider"><span>ឬ</span></div>
-
-      <form id="phoneForm" onsubmit="sendOTP(event)">
-        <div class="input-group">
-          <i class="fa-solid fa-phone"></i>
-          <input type="tel" id="phoneNumber" placeholder="លេខទូរសព្ទ (ឧ. 012345678)" required>
+    <!-- Center: Main Player & Lyrics -->
+    <main class="player-section">
+      <div class="player-card">
+        <div class="song-info">
+          <h2 id="songTitle">បទទី ១ - ស្វាគមន៍</h2>
+          <p id="artistName">តន្ត្រីសម្រាកអារម្មណ៍</p>
         </div>
-        <button type="submit" class="btn-auth btn-phone">ផ្ញើសូដផ្ទៀងផ្ទាត់ (OTP)</button>
-      </form>
 
-      <form id="otpForm" onsubmit="verifyOTP(event)" style="display: none;">
-        <div class="input-group">
-          <i class="fa-solid fa-key"></i>
-          <input type="text" id="otpCode" placeholder="បញ្ជូលកូដ OTP ៦ ខ្ទង់" required>
+        <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+        <!-- Progress Bar -->
+        <div class="progress-container" onclick="setProgress(event)">
+          <div class="progress-bar" id="progressBar"></div>
         </div>
-        <button type="submit" class="btn-auth btn-verify">ផ្ទៀងផ្ទាត់កូដ</button>
-      </form>
-    </div>
+
+        <div class="controls">
+          <button onclick="prevSong()"><i class="fa-solid fa-backward-step"></i></button>
+          <button onclick="togglePlay()" class="btn-main-play" id="playBtn">
+            <i class="fa-solid fa-play"></i>
+          </button>
+          <button onclick="nextSong()"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+
+        <!-- Lyrics Screen -->
+        <div class="lyrics-box" id="lyricsBox">
+          <p class="lyric-line active" data-time="0">🎵 ស្វាគមន៍មកកាន់ KhmerLyric Studio 🎵</p>
+          <p class="lyric-line" data-time="5">សូមរីករាយកម្សាន្តជាមួយតន្ត្រី និងអត្ថបទចម្រៀង</p>
+          <p class="lyric-line" data-time="10">ឃ្លាទី ១៖ ភ្លេងចាប់ផ្តើមលេងយ៉ាងរលូន...</p>
+          <p class="lyric-line" data-time="15">ឃ្លាទី ២៖ អត្ថបទចម្រៀងលោតតាមចង្វាក់ភ្លេង...</p>
+          <p class="lyric-line" data-time="20">🎶 (ភ្លេងកណ្តាល) 🎶</p>
+        </div>
+      </div>
+    </main>
+
   </div>
 
-  <main class="main-content" id="mainContent" style="display: none;">
-    <div class="player-card">
-      <div class="song-info">
-        <h1 id="songTitle">បទ៖ ឈ្មោះបទចម្រៀង</h1>
-        <p id="artistName">អ្នកចម្រៀង៖ ឈ្មោះតារាចម្រៀង</p>
-      </div>
-
-      <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-
-      <div class="controls">
-        <button onclick="togglePlay()" class="btn-play" id="playBtn">
-          <i class="fa-solid fa-play"></i> ច្រៀង
-        </button>
-      </div>
-
-      <div class="lyrics-container">
-        <div id="lyricsBox">
-          <p class="lyric-line" data-time="0">🎵 ស្វាគមន៍មកកាន់ KhmerLyric Studio 🎵</p>
-          <p class="lyric-line" data-time="5">សូមរង់ចាំតន្ត្រីចាប់ផ្តើម...</p>
-          <p class="lyric-line" data-time="10">ឃ្លាចម្រៀងទី ១៖ ស្រលាញ់គ្នាម្តេចមិនប្រាប់...</p>
-          <p class="lyric-line" data-time="15">ឃ្លាចម្រៀងទី ២៖ ទុកឱ្យអូនរង់ចាំយូរម្ល៉េះ...</p>
-          <p class="lyric-line" data-time="20">🎶 (ភ្លេង) 🎶</p>
-          <p class="lyric-line" data-time="25">ឃ្លាចម្រៀងទី ៣៖ ពេលនេះយើងបានជួបគ្នា...</p>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    function loginWithGoogle() {
-      alert("កំពុងចូលប្រើប្រាស់តាម Google...");
-      onLoginSuccess("អ្នកប្រើប្រាស់ Google");
-    }
-
-    function sendOTP(e) {
-      e.preventDefault();
-      document.getElementById('phoneForm').style.display = 'none';
-      document.getElementById('otpForm').style.display = 'block';
-      alert("កូដ OTP ត្រូវបានផ្ញើទៅកាន់លេខរបស់អ្នក!");
-    }
-
-    function verifyOTP(e) {
-      e.preventDefault();
-      const phone = document.getElementById('phoneNumber').value;
-      onLoginSuccess("អ្នកប្រើប្រាស់: " + phone);
-    }
-
-    function onLoginSuccess(name) {
-      document.getElementById('authContainer').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-      document.getElementById('userProfile').style.display = 'flex';
-      document.getElementById('userName').innerText = name;
-    }
-
-    function logout() {
-      location.reload();
-    }
-
-    const audio = document.getElementById('audioPlayer');
-    const playBtn = document.getElementById('playBtn');
-    const lines = document.querySelectorAll('.lyric-line');
-
-    function togglePlay() {
-      if (audio.paused) {
-        audio.play();
-        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i> ផ្អាក';
-      } else {
-        audio.pause();
-        playBtn.innerHTML = '<i class="fa-solid fa-play"></i> ច្រៀង';
-      }
-    }
-
-    audio.addEventListener('timeupdate', () => {
-      const currentTime = audio.currentTime;
-      lines.forEach((line, index) => {
-        const lineTime = parseFloat(line.getAttribute('data-time'));
-        const nextLineTime = lines[index + 1] ? parseFloat(lines[index + 1].getAttribute('data-time')) : Infinity;
-
-        if (currentTime >= lineTime && currentTime < nextLineTime) {
-          lines.forEach(l => l.classList.remove('active'));
-          line.classList.add('active');
-          line.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
-            </html>
-  
+</html>

@@ -65,14 +65,11 @@
   </div>
 
   <script>
-    // =========================================================
-    // 🔑 ត្រង់នេះជាកន្លែងដាក់ API Key (ត្រូវផ្តើមដោយ AIzaSy...)
-    // =========================================================
-    const GEMINI_API_KEY = "សូម_PASTE_API_KEY_ផ្តើមដោយ_AIzaSy_នៅទីនេះ";
+    // 🔑 API Key ពិតប្រាកដរបស់អ្នកបានបញ្ចូលរួចរាល់
+    const GEMINI_API_KEY = "AQ.Ab8RN6IIQZwQjC4KjaBFOB9C84VWhQjrCTKulgFZkOXXUIs9w";
 
     const player = document.getElementById('audioPlayer');
 
-    // 1. មុខងារចាក់សំឡេងអាន (Google TTS Engine)
     function playAudio() {
       const text = document.getElementById('textInput').value.trim();
       const lang = document.getElementById('langSelect').value;
@@ -107,7 +104,7 @@
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
 
-    // 2. មុខងារសួរ AI (Gemini Flash API Endpoint)
+    // មុខងារសួរ AI
     async function askAI() {
       const prompt = document.getElementById('textInput').value.trim();
       const statusBox = document.getElementById('statusBox');
@@ -116,11 +113,6 @@
 
       if (!prompt) {
         alert("សូមបញ្ចូលសំណួរដើម្បីសួរ AI!");
-        return;
-      }
-
-      if (!GEMINI_API_KEY || !GEMINI_API_KEY.startsWith("AIzaSy")) {
-        alert("សូមពិនិត្យមើល API Key! Key ត្រូវតែផ្តើមដោយអក្សរ 'AIzaSy...'");
         return;
       }
 
@@ -133,11 +125,15 @@
           ? "សូមឆ្លើយសំណួរខាងក្រោមជាភាសាខ្មែរ ឱ្យបានត្រឹមត្រូវ និងច្បាស់លាស់៖ " 
           : "Please answer concisely and accurately in English: ";
 
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+        // បញ្ជូន API Key តាម Header x-goog-api-key ដើម្បីកុំឱ្យមានបញ្ហា
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
 
         const response = await fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-goog-api-key': GEMINI_API_KEY 
+          },
           body: JSON.stringify({
             contents: [{ parts: [{ text: instruction + prompt }] }]
           })
@@ -151,7 +147,7 @@
           statusBox.style.display = 'none';
           playAudio();
         } else {
-          alert("មានបញ្ហា API ៖ " + (data.error?.message || "សូមពិនិត្យ API Key ឡើងវិញ"));
+          alert("មានបញ្ហា API ៖ " + (data.error?.message || "សូមពិនិត្យមើលម្ដងទៀត"));
           statusBox.style.display = 'none';
         }
       } catch (error) {
@@ -179,4 +175,5 @@
     }
   </script>
 </body>
-</html>
+  </html>
+  

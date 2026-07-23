@@ -3,98 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានសៀវភៅ & ប្រឡង QCM</title>
+  <title>កម្មវិធីអានអត្ថបទខ្មែរជាសំឡេង (Khmer TTS)</title>
   <link rel="stylesheet" href="style.css">
-  <!-- FontAwesome សម្រាប់ Icon -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-family-awesome/6.4.0/css/all.min.css">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="main-header">
-    <div class="logo">
-      <i class="fa-solid fa-book-open-reader"></i> បណ្ណាល័យឌីជីថល
+  <div class="tts-container">
+    <div class="tts-header">
+      <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទខ្មែរ (Text to Speech)</h2>
+      <p>បញ្ចូលអក្សរខ្មែរខាងក្រោម រួចជ្រើសរើសប្រភេទសំឡេងដើម្បីស្តាប់</p>
     </div>
-    <div class="header-actions">
-      <!-- ប៊ូតុងបើក QCM Modal -->
-      <button class="btn-qcm" onclick="openQcmModal()">
-        <i class="fa-solid fa-stopwatch"></i> ប្រឡង QCM (៥ នាទី)
+
+    <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
+    <div class="input-group">
+      <textarea id="textInput" placeholder="សូមបញ្ចូលអត្ថបទខ្មែរនៅទីនេះ..."></textarea>
+    </div>
+
+    <!-- ការកំណត់សំឡេង -->
+    <div class="controls-grid">
+      <!-- ជ្រើសរើសប្រភេទសំឡេង -->
+      <div class="control-card">
+        <label for="voiceType"><i class="fa-solid fa-user-large"></i> ប្រភេទសំឡេង</label>
+        <select id="voiceType">
+          <option value="female">សំឡេងស្រី (Female)</option>
+          <option value="male">សំឡេងប្រុស (Male)</option>
+          <option value="child">សំឡេងក្មេង (Child)</option>
+        </select>
+      </div>
+
+      <!-- សារ៉េល្បឿននៃការអាន -->
+      <div class="control-card">
+        <label for="rateRange"><i class="fa-solid fa-gauge-high"></i> ល្បឿនអាន: <span id="rateVal">1.0</span>x</label>
+        <input type="range" id="rateRange" min="0.5" max="1.8" step="0.1" value="1">
+      </div>
+
+      <!-- សារ៉េកម្រិតសំឡេង (Pitch) -->
+      <div class="control-card">
+        <label for="pitchRange"><i class="fa-solid fa-sliders"></i> កម្រិតសំឡេង (Pitch): <span id="pitchVal">1.0</span></label>
+        <input type="range" id="pitchRange" min="0.5" max="1.8" step="0.1" value="1">
+      </div>
+    </div>
+
+    <!-- ប៊ូតុងបញ្ជា -->
+    <div class="button-group">
+      <button id="btnPlay" class="btn btn-play" onclick="speakText()">
+        <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-    </div>
-  </header>
-
-  <!-- CONTAINER សៀវភៅ -->
-  <main class="container">
-    <h1 class="main-title">បញ្ជីសៀវភៅប្រវត្តិសាស្ត្រ</h1>
-    
-    <div class="book-grid">
-      <!-- សៀវភៅទី ១ -->
-      <div class="book-card">
-        <div class="book-cover">
-          <i class="fa-solid fa-book"></i>
-        </div>
-        <div class="book-info">
-          <h3>សៀវភៅទី ១៖ ប្រវត្តិសាស្ត្រខ្មែរ ភាគ ១</h3>
-          <p>សិក្សាអំពីប្រវត្តិសាស្ត្រសម័យហ្វូណន ចេនឡា និងដើមសម័យអង្គរ។</p>
-          <button class="btn-read" onclick="openBook(1)">
-            <i class="fa-solid fa-eye"></i> អានសៀវភៅ
-          </button>
-        </div>
-      </div>
-
-      <!-- សៀវភៅទី ២ -->
-      <div class="book-card">
-        <div class="book-cover cover-2">
-          <i class="fa-solid fa-journal-whills"></i>
-        </div>
-        <div class="book-info">
-          <h3>សៀវភៅទី ២៖ ប្រវត្តិសាស្ត្រខ្មែរ ភាគ ២</h3>
-          <p>សិក្សាអំពីសម័យអង្គរដ៏រុងរឿង ការសាងសង់អង្គរវត្ត និងសម័យក្រោយអង្គរ។</p>
-          <button class="btn-read" onclick="openBook(2)">
-            <i class="fa-solid fa-eye"></i> អានសៀវភៅ
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- MODAL អានសៀវភៅ -->
-  <div class="modal-overlay" id="bookModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2 id="modalBookTitle">ចំណងជើងសៀវភៅ</h2>
-        <button class="btn-close" onclick="closeBookModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body" id="modalBookContent">
-        <!-- ខ្លឹមសារសៀវភៅនឹងបង្ហាញនៅទីនេះ -->
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL ប្រឡង QCM -->
-  <div class="qcm-modal-overlay" id="qcmModal">
-    <div class="qcm-card">
-      <div class="qcm-header">
-        <h2><i class="fa-solid fa-file-pen"></i> ប្រឡង QCM ប្រវត្តិសាស្ត្រ</h2>
-        <div class="timer-box">
-          <i class="fa-solid fa-clock"></i> <span id="timeDisplay">05:00</span>
-        </div>
-        <button class="btn-close-qcm" onclick="closeQcmModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <!-- ផ្ទាំងសំណួរ -->
-      <div id="qcmBody" class="qcm-body">
-        <div id="questionContainer"></div>
-        <button class="btn-submit-qcm" onclick="submitQcm()">បញ្ជូនចម្លើយ (Submit)</button>
-      </div>
-
-      <!-- ផ្ទាំងបង្ហាញលទ្ធផល -->
-      <div id="qcmResult" class="qcm-result" style="display: none;">
-        <i class="fa-solid fa-trophy trophy-icon"></i>
-        <h3>លទ្ធផលនៃការប្រឡង</h3>
-        <p id="scoreText" class="score-text">អ្នកទទួលបាន 0 / 10 ពិន្ទុ</p>
-        <button class="btn-submit-qcm" onclick="restartQcm()"><i class="fa-solid fa-rotate-right"></i> ធ្វើម្តងទៀត</button>
-      </div>
+      <button id="btnStop" class="btn btn-stop" onclick="stopText()">
+        <i class="fa-solid fa-square"></i> បញ្ឈប់
+      </button>
+      <button id="btnClear" class="btn btn-clear" onclick="clearText()">
+        <i class="fa-solid fa-trash-can"></i> លុបអក្សរ
+      </button>
     </div>
   </div>
 

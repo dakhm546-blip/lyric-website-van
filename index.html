@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទ & AI ឆ្លើយសំណួរ (Smart TTS + AI)</title>
+  <title>កម្មវិធីអានអត្ថបទ & AI Assistant</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -38,17 +38,16 @@
 
     <!-- ប៊ូតុងបញ្ជាសំខាន់ៗ -->
     <div class="button-group" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
-      <!-- ប៊ូតុងសួរ AI (ថ្មី) -->
       <button class="btn" onclick="askAI()" style="background: #06b6d4; color: white; flex: 1; min-width: 120px;">
         <i class="fa-solid fa-wand-magic-sparkles"></i> សួរ AI
       </button>
       <button class="btn btn-play" onclick="startReading()" style="flex: 1; min-width: 110px;">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-      <button class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 80px;">
+      <button class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 70px;">
         <i class="fa-solid fa-pause"></i> ផ្អាក
       </button>
-      <button class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 80px;">
+      <button class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 70px;">
         <i class="fa-solid fa-square"></i> បញ្ឈប់
       </button>
     </div>
@@ -78,8 +77,8 @@
   </div>
 
   <script>
-    // 🔑 បញ្ចូល Google Gemini API Key របស់អ្នកនៅទីនេះ (ប្រសិនបើមាន)
-    const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+    // 🔑 ដាក់ Gemini API Key របស់អ្នកនៅទីនេះ ប្រសិនបើមាន (បើគ្មានទេ មុខងារ "សួរ AI" នឹងប្រើប្រាស់ Demo Mode)
+    const GEMINI_API_KEY = "";
 
     let chunks = [];
     let currentChunkIndex = 0;
@@ -102,8 +101,23 @@
       statusText.innerText = "AI កំពុងគិត និងឆ្លើយសំណួរ...";
       document.getElementById('chunkStatus').innerText = "";
 
+      // ប្រសិនបើគ្មាន API Key ទេ ឱ្យវាឆ្លើយជាគំរូ (Demo Answer)
+      if (!GEMINI_API_KEY) {
+        setTimeout(() => {
+          let reply = "";
+          if (lang === 'km-KH') {
+            reply = "នេះជាចម្លើយគំរូពី AI៖ ខ្ញុំបានទទួលសំណួររបស់អ្នកគឺ \"" + prompt + "\" រួចរាល់ហើយ! (សូមបញ្ចូល Gemini API Key ក្នុងកូដដើម្បីទទួលបានចម្លើយ AI ពិតប្រាកដ)។";
+          } else {
+            reply = "This is a demo AI response for your question: \"" + prompt + "\". Please add a valid Gemini API Key in the code to get real AI answers.";
+          }
+          document.getElementById('textInput').value = reply;
+          statusBox.style.display = 'none';
+          startReading(); // ចាក់សំឡេងចម្លើយ
+        }, 1000);
+        return;
+      }
+
       try {
-        // បង្កើត Prompt ឱ្យ AI ឆ្លើយតាមភាសាដែលបានជ្រើសរើស
         const langInstruction = (lang === 'km-KH') 
           ? "Please answer the following question in Khmer language concisely and clearly: " 
           : "Please answer the following question in English concisely and clearly: ";
@@ -120,24 +134,180 @@
         
         if (data.candidates && data.candidates[0].content.parts[0].text) {
           const aiReply = data.candidates[0].content.parts[0].text;
-          
-          // បង្ហាញចម្លើយ AI ចូលក្នុងប្រអប់
           document.getElementById('textInput').value = aiReply;
           statusBox.style.display = 'none';
-
-          // ចាក់សំឡេងអានចម្លើយ AI ដោយស្វ័យប្រវត្តិ
           startReading();
         } else {
-          throw new Error("មិនអាចទទួលបានចម្លើយពី AI ទេ");
+          throw new Error("API Response Error");
         }
       } catch (error) {
         console.error(error);
         statusBox.style.display = 'none';
-        alert("មានបញ្ហាក្នុងការតភ្ជាប់ជាមួយ AI! សូមពិនិត្យមើល API Key ឬ អ៊ីនធឺណិតរបស់អ្នក។");
+        alert("មិនអាចទទួលបានចម្លើយពី AI ទេ! សូមពិនិត្យមើល API Key ឬ អ៊ីនធឺណិតរបស់អ្នក។");
       }
     }
 
     // 2. បំបែកអត្ថបទវែងៗ
     function splitTextIntoChunks(text) {
-      return text.split(/[\n.!?៖I encountered an error doing what you asked. Could you try again?
-    
+      return text.split(/[\n.!?៖I]+/).filter(chunk => chunk.trim().length > 0);
+    }
+
+    // 3. មុខងារចាក់សំឡេង
+    function startReading() {
+      const text = document.getElementById('textInput').value.trim();
+      const selectedLang = document.getElementById('langSelect').value;
+
+      if (!text) {
+        alert("សូមបញ្ចូលអត្ថបទជាមុនសិន!");
+        return;
+      }
+
+      saveToHistory(text);
+
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        return;
+      }
+
+      stopReading();
+
+      chunks = splitTextIntoChunks(text);
+      if (chunks.length === 0) return;
+
+      currentChunkIndex = 0;
+      isSpeaking = true;
+      document.getElementById('statusBox').style.display = 'block';
+      document.getElementById('statusText').innerText = "កំពុងអាន...";
+
+      readNextChunk(selectedLang);
+    }
+
+    function readNextChunk(selectedLang) {
+      if (!isSpeaking || currentChunkIndex >= chunks.length) {
+        document.getElementById('statusBox').style.display = 'none';
+        isSpeaking = false;
+        return;
+      }
+
+      const chunkText = chunks[currentChunkIndex];
+      document.getElementById('chunkStatus').innerText = `(${currentChunkIndex + 1}/${chunks.length})`;
+
+      const utterance = new SpeechSynthesisUtterance(chunkText);
+      utterance.lang = selectedLang;
+      utterance.rate = 0.9;
+
+      const voices = window.speechSynthesis.getVoices();
+      const matchedVoice = voices.find(v => v.lang.includes(selectedLang) || v.lang.startsWith(selectedLang.split('-')[0]));
+      if (matchedVoice) utterance.voice = matchedVoice;
+
+      utterance.onend = () => {
+        currentChunkIndex++;
+        readNextChunk(selectedLang);
+      };
+
+      utterance.onerror = () => {
+        currentChunkIndex++;
+        readNextChunk(selectedLang);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function pauseReading() {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+      }
+    }
+
+    function stopReading() {
+      isSpeaking = false;
+      chunks = [];
+      currentChunkIndex = 0;
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('statusBox').style.display = 'none';
+    }
+
+    function clearAll() {
+      stopReading();
+      document.getElementById('textInput').value = '';
+    }
+
+    // 4. Download MP3
+    function downloadAudio() {
+      const text = document.getElementById('textInput').value.trim();
+      const lang = document.getElementById('langSelect').value;
+
+      if (!text) {
+        alert("សូមបញ្ចូលអត្ថបទដើម្បីទាញយក MP3!");
+        return;
+      }
+
+      const voice = (lang === 'km-KH') ? 'Khmer' : 'Brian';
+      const cleanText = encodeURIComponent(text);
+      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${cleanText}`;
+
+      const a = document.createElement('a');
+      a.href = audioUrl;
+      a.download = `TTS_Audio_${Date.now()}.mp3`;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // 5. Share Text
+    function shareText() {
+      const text = document.getElementById('textInput').value.trim();
+      if (!text) {
+        alert("គ្មានអត្ថបទសម្រាប់ចែករំលែកទេ!");
+        return;
+      }
+
+      if (navigator.share) {
+        navigator.share({ title: 'អត្ថបទសំឡេង', text: text, url: window.location.href }).catch(console.error);
+      } else {
+        navigator.clipboard.writeText(text);
+        alert("បាន Copy អត្ថបទទៅកាន់ Clipboard រួចរាល់!");
+      }
+    }
+
+    // 6. History Management
+    function saveToHistory(text) {
+      let history = JSON.parse(localStorage.getItem('tts_history') || '[]');
+      if (!history.includes(text)) {
+        history.unshift(text);
+        if (history.length > 5) history.pop();
+        localStorage.setItem('tts_history', JSON.stringify(history));
+        renderHistory();
+      }
+    }
+
+    function renderHistory() {
+      const historyList = document.getElementById('historyList');
+      let history = JSON.parse(localStorage.getItem('tts_history') || '[]');
+      historyList.innerHTML = '';
+
+      if (history.length === 0) {
+        historyList.innerHTML = '<li style="color: #64748b; font-size: 12px;">គ្មានប្រវត្តិអត្ថបទទេ</li>';
+        return;
+      }
+
+      history.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.style.cssText = "background: #0f172a; padding: 8px; border-radius: 6px; margin-bottom: 5px; color: #94a3b8; font-size: 13px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
+        li.innerText = `${index + 1}. ${item}`;
+        li.onclick = () => { document.getElementById('textInput').value = item; };
+        historyList.appendChild(li);
+      });
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('tts_history');
+      renderHistory();
+    }
+
+    window.onload = renderHistory;
+  </script>
+</body>
+  </html>
+  

@@ -65,12 +65,14 @@
   </div>
 
   <script>
-    // 🔑 API Key របស់អ្នកបានដាក់បញ្ចូលរួចរាល់!
-    const GEMINI_API_KEY = "AIzaSyAQ.Ab8RN6LsynPJkX9SQg0hul037dcqaP4m5uFWfb51AHt253SnUA";
+    // =========================================================
+    // 🔑 ត្រង់នេះជាកន្លែងដាក់ API Key (ត្រូវផ្តើមដោយ AIzaSy...)
+    // =========================================================
+    const GEMINI_API_KEY = "សូម_PASTE_API_KEY_ផ្តើមដោយ_AIzaSy_នៅទីនេះ";
 
     const player = document.getElementById('audioPlayer');
 
-    // 1. មុខងារចាក់សំឡេងអានភាសាខ្មែរ/អង់គ្លេស
+    // 1. មុខងារចាក់សំឡេងអាន (Google TTS Engine)
     function playAudio() {
       const text = document.getElementById('textInput').value.trim();
       const lang = document.getElementById('langSelect').value;
@@ -91,10 +93,12 @@
     }
 
     function useWebSpeech(text, lang) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      window.speechSynthesis.speak(utterance);
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        window.speechSynthesis.speak(utterance);
+      }
     }
 
     function stopAudio() {
@@ -103,7 +107,7 @@
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
 
-    // 2. មុខងារសួរ AI (Gemini 1.5 Flash)
+    // 2. មុខងារសួរ AI (Gemini Flash API Endpoint)
     async function askAI() {
       const prompt = document.getElementById('textInput').value.trim();
       const statusBox = document.getElementById('statusBox');
@@ -112,6 +116,11 @@
 
       if (!prompt) {
         alert("សូមបញ្ចូលសំណួរដើម្បីសួរ AI!");
+        return;
+      }
+
+      if (!GEMINI_API_KEY || !GEMINI_API_KEY.startsWith("AIzaSy")) {
+        alert("សូមពិនិត្យមើល API Key! Key ត្រូវតែផ្តើមដោយអក្សរ 'AIzaSy...'");
         return;
       }
 
@@ -124,7 +133,9 @@
           ? "សូមឆ្លើយសំណួរខាងក្រោមជាភាសាខ្មែរ ឱ្យបានត្រឹមត្រូវ និងច្បាស់លាស់៖ " 
           : "Please answer concisely and accurately in English: ";
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -138,15 +149,15 @@
           const reply = data.candidates[0].content.parts[0].text;
           document.getElementById('textInput').value = reply;
           statusBox.style.display = 'none';
-          playAudio(); // ចាក់សំឡេងចម្លើយភ្លាមៗ
+          playAudio();
         } else {
-          alert("មានបញ្ហា API Key ៖ " + (data.error?.message || "សូមពិនិត្យមើល Key ឡើងវិញ"));
+          alert("មានបញ្ហា API ៖ " + (data.error?.message || "សូមពិនិត្យ API Key ឡើងវិញ"));
           statusBox.style.display = 'none';
         }
       } catch (error) {
         console.error(error);
         statusBox.style.display = 'none';
-        alert("មិនអាចភ្ជាប់ទៅ AI បានទេ! សូមពិនិត្យអ៊ីនធឺណិត។");
+        alert("មិនអាចភ្ជាប់ទៅ AI បានទេ! សូមពិនិត្យមើលការតភ្ជាប់អ៊ីនធឺណិត។");
       }
     }
 
@@ -163,10 +174,9 @@
         navigator.share({ title: 'AI Response', text: text });
       } else {
         navigator.clipboard.writeText(text);
-        alert("បាន Copy រួចរាល់!");
+        alert("បាន Copy អត្ថបទរួចរាល់!");
       }
     }
   </script>
 </body>
-        </html>
-  
+</html>

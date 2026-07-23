@@ -1,27 +1,171 @@
-/* ប៊ូតុង QCM លើ Header */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Kantumruy Pro', sans-serif, Arial;
+}
+
+body {
+  background-color: #0f172a;
+  color: #f8fafc;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
 .btn-qcm {
   background: linear-gradient(45deg, #ff007f, #7928ca);
   color: #fff;
   border: none;
-  padding: 9px 18px;
+  padding: 10px 20px;
   font-weight: bold;
   border-radius: 20px;
   cursor: pointer;
   transition: 0.3s;
 }
-.btn-qcm:hover { opacity: 0.9; transform: scale(1.03); }
 
-/* QCM Modal Container */
+.btn-qcm:hover {
+  opacity: 0.9;
+  transform: scale(1.03);
+}
+
+/* CONTAINER & BOOK CARDS */
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.main-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #f1f5f9;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.book-card {
+  background: #1e293b;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-cover {
+  height: 160px;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  color: white;
+}
+
+.cover-2 {
+  background: linear-gradient(135deg, #0d9488, #059669);
+}
+
+.book-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.book-info h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #38bdf8;
+}
+
+.book-info p {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.btn-read {
+  background: #0284c7;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn-read:hover {
+  background: #0369a1;
+}
+
+/* MODAL - BOOK READER */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; pointer-events: none; transition: 0.3s;
+  z-index: 100;
+}
+
+.modal-overlay.active {
+  opacity: 1; pointer-events: all;
+}
+
+.modal-card {
+  background: #1e293b;
+  width: 90%; max-width: 700px; max-height: 80vh;
+  border-radius: 16px; display: flex; flex-direction: column;
+  overflow: hidden; border: 1px solid #334155;
+}
+
+.modal-header {
+  padding: 15px 20px; background: #0f172a;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.btn-close {
+  background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px; overflow-y: auto; line-height: 1.6; color: #cbd5e1;
+}
+
+/* MODAL - QCM */
 .qcm-modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
   display: flex; justify-content: center; align-items: center;
-  z-index: 300; opacity: 0; pointer-events: none; transition: 0.3s;
+  opacity: 0; pointer-events: none; transition: 0.3s; z-index: 200;
 }
+
 .qcm-modal-overlay.active { opacity: 1; pointer-events: all; }
 
 .qcm-card {
-  background: #181818; border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #181818; border: 1px solid rgba(255, 255, 255, 0.15);
   width: 90%; max-width: 650px; max-height: 85vh; border-radius: 20px;
   display: flex; flex-direction: column; overflow: hidden;
 }
@@ -30,9 +174,9 @@
   padding: 15px 20px; background: #111; display: flex;
   justify-content: space-between; align-items: center; border-bottom: 1px solid #333;
 }
+
 .qcm-header h2 { font-size: 18px; color: #00f2fe; }
 
-/* Timer Box */
 .timer-box {
   background: #ff0055; color: #fff; padding: 6px 14px;
   border-radius: 20px; font-weight: bold; font-size: 14px;
@@ -41,7 +185,6 @@
 
 .btn-close-qcm { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
 
-/* QCM Body & Questions */
 .qcm-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
 .q-card { background: #222; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left; }
 .q-title { font-size: 15px; font-weight: bold; margin-bottom: 12px; color: #fff; }
@@ -51,6 +194,7 @@
   padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer;
   border: 1px solid #333; transition: 0.2s; font-size: 14px;
 }
+
 .opt-label:hover { border-color: #00f2fe; background: #252525; }
 .opt-label input { accent-color: #00f2fe; }
 
@@ -60,7 +204,6 @@
   font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px;
 }
 
-/* Result Section */
 .qcm-result { padding: 40px 20px; text-align: center; }
 .trophy-icon { font-size: 60px; color: #ffd700; margin-bottom: 15px; }
 .score-text { font-size: 22px; font-weight: bold; color: #00ff87; margin: 15px 0; }

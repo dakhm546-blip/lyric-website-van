@@ -3,34 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lyric Karaoke Studio</title>
+  <title>Music & Lyrics Player</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Header Section -->
   <header>
     <div class="logo">
-      <i class="fa-solid fa-music"></i> <span>KhmerLyric</span>
-    </div>
-    <div class="search-bar">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="searchInput" onkeyup="searchSong()" placeholder="ស្វែងរកបទចម្រៀង...">
+      <i class="fa-solid fa-music"></i>
     </div>
     <div class="user-profile" id="userProfile">
-      <i class="fa-solid fa-circle-user"></i>
-      <span id="userName">ភ្ញៀវ</span>
+      <span id="userName">អ្នកប្រើប្រាស់</span>
+      <button onclick="logout()" class="btn-logout">ចាកចេញ</button>
     </div>
   </header>
 
   <!-- Main App Layout -->
   <div class="app-container">
-    
+
     <!-- Left Sidebar: Playlist -->
     <aside class="sidebar">
-      <h3><i class="fa-solid fa-list-ul"></i> បញ្ជីបទចម្រៀង</h3>
+      <h3><i class="fa-solid fa-list-ul"></i> បញ្ជីចម្រៀង</h3>
       <ul id="playlist">
         <li onclick="selectSong(0)" class="active">
           <i class="fa-solid fa-compact-disc"></i>
@@ -49,6 +43,20 @@
       </ul>
     </aside>
 
+    <!-- Spotify Player Section (បញ្ចូលអាល់ប៊ុម/បទ Spotify) -->
+    <section class="spotify-section" style="margin: 15px 0;">
+      <iframe 
+        style="border-radius:12px" 
+        src="https://open.spotify.com/embed/track/1LQHFV3h3Sq5GtHOPEznSn?utm_source=generator" 
+        width="100%" 
+        height="152" 
+        frameBorder="0" 
+        allowfullscreen="" 
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        loading="lazy">
+      </iframe>
+    </section>
+
     <!-- Center: Main Player & Lyrics -->
     <main class="player-section">
       <div class="player-card">
@@ -57,29 +65,7 @@
           <p id="artistName">តន្ត្រីសម្រាកអារម្មណ៍</p>
         </div>
 
-        <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-
-        <!-- Progress Bar -->
-        <div class="progress-container" onclick="setProgress(event)">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-
-        <div class="controls">
-          <button onclick="prevSong()"><i class="fa-solid fa-backward-step"></i></button>
-          <button onclick="togglePlay()" class="btn-main-play" id="playBtn">
-            <i class="fa-solid fa-play"></i>
-          </button>
-          <button onclick="nextSong()"><i class="fa-solid fa-forward-step"></i></button>
-        </div>
-
-        <!-- Lyrics Screen -->
-        <div class="lyrics-box" id="lyricsBox">
-          <p class="lyric-line active" data-time="0">🎵 ស្វាគមន៍មកកាន់ KhmerLyric Studio 🎵</p>
-          <p class="lyric-line" data-time="5">សូមរីករាយកម្សាន្តជាមួយតន្ត្រី និងអត្ថបទចម្រៀង</p>
-          <p class="lyric-line" data-time="10">ឃ្លាទី ១៖ ភ្លេងចាប់ផ្តើមលេងយ៉ាងរលូន...</p>
-          <p class="lyric-line" data-time="15">ឃ្លាទី ២៖ អត្ថបទចម្រៀងលោតតាមចង្វាក់ភ្លេង...</p>
-          <p class="lyric-line" data-time="20">🎶 (ភ្លេងកណ្តាល) 🎶</p>
-        </div>
+        <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" controls></audio>
       </div>
     </main>
 
@@ -87,4 +73,5 @@
 
   <script src="script.js"></script>
 </body>
-</html>
+  </html>
+                                             

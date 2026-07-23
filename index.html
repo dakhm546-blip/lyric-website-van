@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទឆ្លាតវៃ (Smart TTS Pro)</title>
+  <title>កម្មវិធីអានអត្ថបទ & AI ឆ្លើយសំណួរ (Smart TTS + AI)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,8 +11,8 @@
 
   <div class="tts-container">
     <div class="tts-header">
-      <h2><i class="fa-solid fa-book-open-reader"></i> កម្មវិធីអានអត្ថបទ (Smart TTS)</h2>
-      <p>អានអត្ថបទវែងៗ ទាញយកជា MP3 និងរក្សាទុកប្រវត្តិ</p>
+      <h2><i class="fa-solid fa-robot"></i> កម្មវិធីអានអត្ថបទ & AI Assistant</h2>
+      <p>បញ្ចូលអត្ថបទអាន ឬសួរសំណួរទៅកាន់ AI</p>
     </div>
 
     <!-- ជ្រើសរើសភាសា -->
@@ -26,33 +26,37 @@
       </select>
     </div>
 
-    <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
+    <!-- ប្រអប់បញ្ចូលអត្ថបទ/សំណួរ -->
     <div class="input-group">
-      <textarea id="textInput" placeholder="បញ្ចូលអត្ថបទខ្មែរ ឬ អង់គ្លេស នៅទីនេះ..."></textarea>
+      <textarea id="textInput" placeholder="បញ្ចូលអត្ថបទអាន ឬ សួរសំណួរនៅទីនេះ..."></textarea>
     </div>
 
     <!-- របារបង្ហាញស្ថានភាព -->
     <div id="statusBox" style="margin-top: 8px; color: #38bdf8; font-size: 14px; text-align: center; display: none;">
-      កំពុងអាន... <span id="chunkStatus">(0/0)</span>
+      <span id="statusText">កំពុងអាន...</span> <span id="chunkStatus"></span>
     </div>
 
-    <!-- ប៊ូតុងបញ្ជាការអាន -->
+    <!-- ប៊ូតុងបញ្ជាសំខាន់ៗ -->
     <div class="button-group" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+      <!-- ប៊ូតុងសួរ AI (ថ្មី) -->
+      <button class="btn" onclick="askAI()" style="background: #06b6d4; color: white; flex: 1; min-width: 120px;">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> សួរ AI
+      </button>
       <button class="btn btn-play" onclick="startReading()" style="flex: 1; min-width: 110px;">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-      <button class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 90px;">
+      <button class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 80px;">
         <i class="fa-solid fa-pause"></i> ផ្អាក
       </button>
-      <button class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 90px;">
+      <button class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 80px;">
         <i class="fa-solid fa-square"></i> បញ្ឈប់
       </button>
     </div>
 
-    <!-- មុខងារបន្ថែម៖ Download & Share -->
+    <!-- មុខងារបន្ថែម៖ Download, Share, Clear -->
     <div style="margin-top: 10px; display: flex; gap: 8px;">
       <button class="btn" onclick="downloadAudio()" style="background: #10b981; color: white; flex: 1;">
-        <i class="fa-solid fa-download"></i> ទាញយក MP3
+        <i class="fa-solid fa-download"></i> MP3
       </button>
       <button class="btn" onclick="shareText()" style="background: #8b5cf6; color: white; flex: 1;">
         <i class="fa-solid fa-share-nodes"></i> ចែករំលែក
@@ -65,187 +69,75 @@
     <!-- ប្រវត្តិអត្ថបទ (History Log) -->
     <div style="margin-top: 20px; border-top: 1px solid #334155; padding-top: 15px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <span style="color: #cbd5e1; font-size: 14px;"><i class="fa-solid fa-clock-rotate-left"></i> ប្រវត្តិអត្ថបទចាស់ៗ</span>
+        <span style="color: #cbd5e1; font-size: 14px;"><i class="fa-solid fa-clock-rotate-left"></i> ប្រវត្តិអត្ថបទ/សំណួរ</span>
         <button onclick="clearHistory()" style="background: none; border: none; color: #ef4444; font-size: 12px; cursor: pointer;">លុបប្រវត្តិ</button>
       </div>
-      <ul id="historyList" style="list-style: none; max-height: 120px; overflow-y: auto; padding: 0;">
-        <!-- ប្រវត្តិអត្ថបទនឹងបង្ហាញនៅទីនេះ -->
-      </ul>
+      <ul id="historyList" style="list-style: none; max-height: 120px; overflow-y: auto; padding: 0;"></ul>
     </div>
 
   </div>
 
   <script>
+    // 🔑 បញ្ចូល Google Gemini API Key របស់អ្នកនៅទីនេះ (ប្រសិនបើមាន)
+    const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+
     let chunks = [];
     let currentChunkIndex = 0;
     let isSpeaking = false;
 
-    // 1. បំបែកអត្ថបទវែងៗ
-    function splitTextIntoChunks(text) {
-      return text.split(/[\n.!?៖៕]+/).filter(chunk => chunk.trim().length > 0);
-    }
-
-    // 2. មុខងារចាក់សំឡេង
-    function startReading() {
-      const text = document.getElementById('textInput').value.trim();
-      const selectedLang = document.getElementById('langSelect').value;
-
-      if (!text) {
-        alert("សូមបញ្ចូលអត្ថបទជាមុនសិន!");
-        return;
-      }
-
-      saveToHistory(text); // រក្សាទុកក្នុងប្រវត្តិ
-
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-        return;
-      }
-
-      stopReading();
-
-      chunks = splitTextIntoChunks(text);
-      if (chunks.length === 0) return;
-
-      currentChunkIndex = 0;
-      isSpeaking = true;
-      document.getElementById('statusBox').style.display = 'block';
-
-      readNextChunk(selectedLang);
-    }
-
-    function readNextChunk(selectedLang) {
-      if (!isSpeaking || currentChunkIndex >= chunks.length) {
-        document.getElementById('statusBox').style.display = 'none';
-        isSpeaking = false;
-        return;
-      }
-
-      const chunkText = chunks[currentChunkIndex];
-      document.getElementById('chunkStatus').innerText = `(${currentChunkIndex + 1}/${chunks.length})`;
-
-      const utterance = new SpeechSynthesisUtterance(chunkText);
-      utterance.lang = selectedLang;
-      utterance.rate = 0.9;
-
-      const voices = window.speechSynthesis.getVoices();
-      const matchedVoice = voices.find(v => v.lang.includes(selectedLang) || v.lang.startsWith(selectedLang.split('-')[0]));
-      if (matchedVoice) utterance.voice = matchedVoice;
-
-      utterance.onend = () => {
-        currentChunkIndex++;
-        readNextChunk(selectedLang);
-      };
-
-      utterance.onerror = () => {
-        currentChunkIndex++;
-        readNextChunk(selectedLang);
-      };
-
-      window.speechSynthesis.speak(utterance);
-    }
-
-    function pauseReading() {
-      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        window.speechSynthesis.pause();
-      }
-    }
-
-    function stopReading() {
-      isSpeaking = false;
-      chunks = [];
-      currentChunkIndex = 0;
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      document.getElementById('statusBox').style.display = 'none';
-    }
-
-    function clearAll() {
-      stopReading();
-      document.getElementById('textInput').value = '';
-    }
-
-    // 3. មុខងារទាញយកសំឡេង MP3 (Download MP3)
-    function downloadAudio() {
-      const text = document.getElementById('textInput').value.trim();
+    // 1. មុខងារសួរ AI (Gemini API)
+    async function askAI() {
+      const prompt = document.getElementById('textInput').value.trim();
+      const statusBox = document.getElementById('statusBox');
+      const statusText = document.getElementById('statusText');
       const lang = document.getElementById('langSelect').value;
 
-      if (!text) {
-        alert("សូមបញ្ចូលអត្ថបទដើម្បីទាញយក MP3!");
+      if (!prompt) {
+        alert("សូមបញ្ចូលសំណួរដើម្បីសួរ AI!");
         return;
       }
 
-      const voice = (lang === 'km-KH') ? 'Khmer' : 'Brian';
-      const cleanText = encodeURIComponent(text);
-      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${cleanText}`;
+      stopReading();
+      statusBox.style.display = 'block';
+      statusText.innerText = "AI កំពុងគិត និងឆ្លើយសំណួរ...";
+      document.getElementById('chunkStatus').innerText = "";
 
-      const a = document.createElement('a');
-      a.href = audioUrl;
-      a.download = `TTS_Audio_${Date.now()}.mp3`;
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
+      try {
+        // បង្កើត Prompt ឱ្យ AI ឆ្លើយតាមភាសាដែលបានជ្រើសរើស
+        const langInstruction = (lang === 'km-KH') 
+          ? "Please answer the following question in Khmer language concisely and clearly: " 
+          : "Please answer the following question in English concisely and clearly: ";
 
-    // 4. មុខងារចែករំលែក (Share Text)
-    function shareText() {
-      const text = document.getElementById('textInput').value.trim();
-      if (!text) {
-        alert("គ្មានអត្ថបទសម្រាប់ចែករំលែកទេ!");
-        return;
-      }
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: langInstruction + prompt }] }]
+          })
+        });
 
-      if (navigator.share) {
-        navigator.share({
-          title: 'អត្ថបទសំឡេង',
-          text: text,
-          url: window.location.href
-        }).catch(console.error);
-      } else {
-        navigator.clipboard.writeText(text);
-        alert("បាន Copy អត្ថបទទៅកាន់ Clipboard រួចរាល់!");
-      }
-    }
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          const aiReply = data.candidates[0].content.parts[0].text;
+          
+          // បង្ហាញចម្លើយ AI ចូលក្នុងប្រអប់
+          document.getElementById('textInput').value = aiReply;
+          statusBox.style.display = 'none';
 
-    // 5. មុខងារគ្រប់គ្រងប្រវត្តិ (History Log)
-    function saveToHistory(text) {
-      let history = JSON.parse(localStorage.getItem('tts_history') || '[]');
-      if (!history.includes(text)) {
-        history.unshift(text);
-        if (history.length > 5) history.pop(); // រក្សាទុកត្រឹម ៥ អត្ថបទចុងក្រោយ
-        localStorage.setItem('tts_history', JSON.stringify(history));
-        renderHistory();
+          // ចាក់សំឡេងអានចម្លើយ AI ដោយស្វ័យប្រវត្តិ
+          startReading();
+        } else {
+          throw new Error("មិនអាចទទួលបានចម្លើយពី AI ទេ");
+        }
+      } catch (error) {
+        console.error(error);
+        statusBox.style.display = 'none';
+        alert("មានបញ្ហាក្នុងការតភ្ជាប់ជាមួយ AI! សូមពិនិត្យមើល API Key ឬ អ៊ីនធឺណិតរបស់អ្នក។");
       }
     }
 
-    function renderHistory() {
-      const historyList = document.getElementById('historyList');
-      let history = JSON.parse(localStorage.getItem('tts_history') || '[]');
-      historyList.innerHTML = '';
-
-      if (history.length === 0) {
-        historyList.innerHTML = '<li style="color: #64748b; font-size: 12px;">គ្មានប្រវត្តិអត្ថបទទេ</li>';
-        return;
-      }
-
-      history.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.style.cssText = "background: #0f172a; padding: 8px; border-radius: 6px; margin-bottom: 5px; color: #94a3b8; font-size: 13px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
-        li.innerText = `${index + 1}. ${item}`;
-        li.onclick = () => {
-          document.getElementById('textInput').value = item;
-        };
-        historyList.appendChild(li);
-      });
-    }
-
-    function clearHistory() {
-      localStorage.removeItem('tts_history');
-      renderHistory();
-    }
-
-    // បង្ហាញប្រវត្តិពេលបើក Web ដំបូង
-    window.onload = renderHistory;
-  </script>
-</body>
-</html>
+    // 2. បំបែកអត្ថបទវែងៗ
+    function splitTextIntoChunks(text) {
+      return text.split(/[\n.!?៖I encountered an error doing what you asked. Could you try again?
+    

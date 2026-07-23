@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទវែង (Long Text Reader)</title>
+  <title>កម្មវិធីអានអត្ថបទឆ្លាតវៃ (Smart TTS Pro)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,12 +11,12 @@
 
   <div class="tts-container">
     <div class="tts-header">
-      <h2><i class="fa-solid fa-book-open-reader"></i> កម្មវិធីអានអត្ថបទវែងៗ (TTS)</h2>
-      <p>បញ្ចូលអត្ថបទច្រើន ឬវែងៗ ខាងក្រោម រួចចុច "ចាក់សំឡេង"</p>
+      <h2><i class="fa-solid fa-book-open-reader"></i> កម្មវិធីអានអត្ថបទ (Smart TTS)</h2>
+      <p>អានអត្ថបទវែងៗ ទាញយកជា MP3 និងរក្សាទុកប្រវត្តិ</p>
     </div>
 
     <!-- ជ្រើសរើសភាសា -->
-    <div style="margin-bottom: 15px;">
+    <div style="margin-bottom: 12px;">
       <label for="langSelect" style="color: #cbd5e1; font-size: 14px; display: block; margin-bottom: 5px;">
         <i class="fa-solid fa-language"></i> ជ្រើសរើសភាសា៖
       </label>
@@ -28,29 +28,51 @@
 
     <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
     <div class="input-group">
-      <textarea id="textInput" placeholder="បញ្ចូលអត្ថបទវែងៗ ឬច្រើនមេរៀននៅទីនេះ..."></textarea>
+      <textarea id="textInput" placeholder="បញ្ចូលអត្ថបទខ្មែរ ឬ អង់គ្លេស នៅទីនេះ..."></textarea>
     </div>
 
-    <!-- របារបង្ហាញព័ត៌មាននៃការអាន -->
-    <div id="statusBox" style="margin-top: 10px; color: #38bdf8; font-size: 14px; text-align: center; display: none;">
-      កំពុងអាន... <span id="chunkStatus">0/0</span>
+    <!-- របារបង្ហាញស្ថានភាព -->
+    <div id="statusBox" style="margin-top: 8px; color: #38bdf8; font-size: 14px; text-align: center; display: none;">
+      កំពុងអាន... <span id="chunkStatus">(0/0)</span>
     </div>
 
-    <!-- ប៊ូតុងបញ្ជា -->
-    <div class="button-group" style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap;">
-      <button id="btnPlay" class="btn btn-play" onclick="startReading()" style="flex: 1; min-width: 120px;">
+    <!-- ប៊ូតុងបញ្ជាការអាន -->
+    <div class="button-group" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+      <button class="btn btn-play" onclick="startReading()" style="flex: 1; min-width: 110px;">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-      <button id="btnPause" class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 100px;">
+      <button class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 90px;">
         <i class="fa-solid fa-pause"></i> ផ្អាក
       </button>
-      <button id="btnStop" class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 100px;">
+      <button class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 90px;">
         <i class="fa-solid fa-square"></i> បញ្ឈប់
       </button>
-      <button id="btnClear" class="btn btn-clear" onclick="clearAll()" style="flex: 1; min-width: 100px;">
+    </div>
+
+    <!-- មុខងារបន្ថែម៖ Download & Share -->
+    <div style="margin-top: 10px; display: flex; gap: 8px;">
+      <button class="btn" onclick="downloadAudio()" style="background: #10b981; color: white; flex: 1;">
+        <i class="fa-solid fa-download"></i> ទាញយក MP3
+      </button>
+      <button class="btn" onclick="shareText()" style="background: #8b5cf6; color: white; flex: 1;">
+        <i class="fa-solid fa-share-nodes"></i> ចែករំលែក
+      </button>
+      <button class="btn btn-clear" onclick="clearAll()" style="flex: 0.5;">
         <i class="fa-solid fa-trash-can"></i> លុប
       </button>
     </div>
+
+    <!-- ប្រវត្តិអត្ថបទ (History Log) -->
+    <div style="margin-top: 20px; border-top: 1px solid #334155; padding-top: 15px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="color: #cbd5e1; font-size: 14px;"><i class="fa-solid fa-clock-rotate-left"></i> ប្រវត្តិអត្ថបទចាស់ៗ</span>
+        <button onclick="clearHistory()" style="background: none; border: none; color: #ef4444; font-size: 12px; cursor: pointer;">លុបប្រវត្តិ</button>
+      </div>
+      <ul id="historyList" style="list-style: none; max-height: 120px; overflow-y: auto; padding: 0;">
+        <!-- ប្រវត្តិអត្ថបទនឹងបង្ហាញនៅទីនេះ -->
+      </ul>
+    </div>
+
   </div>
 
   <script>
@@ -58,40 +80,37 @@
     let currentChunkIndex = 0;
     let isSpeaking = false;
 
-    // បំបែកអត្ថបទវែងជាផ្នែកតូចៗ (Chunks) តាមសញ្ញាក្បៀស សញ្ញាចុច ឬចុះបន្ទាត់
+    // 1. បំបែកអត្ថបទវែងៗ
     function splitTextIntoChunks(text) {
-      // បំបែកតាម newline, 符号, ៖, ៕, ., !, ?
       return text.split(/[\n.!?៖៕]+/).filter(chunk => chunk.trim().length > 0);
     }
 
+    // 2. មុខងារចាក់សំឡេង
     function startReading() {
       const text = document.getElementById('textInput').value.trim();
       const selectedLang = document.getElementById('langSelect').value;
-      const statusBox = document.getElementById('statusBox');
 
       if (!text) {
         alert("សូមបញ្ចូលអត្ថបទជាមុនសិន!");
         return;
       }
 
-      // ប្រសិនបើកំពុង Pause ឲ្យវា Resume អានត
+      saveToHistory(text); // រក្សាទុកក្នុងប្រវត្តិ
+
       if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
         return;
       }
 
-      // បញ្ឈប់ការអានចាស់ៗ
       stopReading();
 
-      // បំបែកអត្ថបទវែងជា Chunk
       chunks = splitTextIntoChunks(text);
       if (chunks.length === 0) return;
 
       currentChunkIndex = 0;
       isSpeaking = true;
-      statusBox.style.display = 'block';
+      document.getElementById('statusBox').style.display = 'block';
 
-      // ចាប់ផ្ដើមអាន Chunk ទី១
       readNextChunk(selectedLang);
     }
 
@@ -107,23 +126,18 @@
 
       const utterance = new SpeechSynthesisUtterance(chunkText);
       utterance.lang = selectedLang;
-      utterance.rate = 0.9; // ល្បឿនអាន
+      utterance.rate = 0.9;
 
-      // ស្វែងរកសំឡេង
       const voices = window.speechSynthesis.getVoices();
       const matchedVoice = voices.find(v => v.lang.includes(selectedLang) || v.lang.startsWith(selectedLang.split('-')[0]));
-      if (matchedVoice) {
-        utterance.voice = matchedVoice;
-      }
+      if (matchedVoice) utterance.voice = matchedVoice;
 
-      // ពេលអានចប់ Chunk មួយ ឲ្យវាអាន Chunk បន្ទាប់ដោយស្វ័យប្រវត្តិ
       utterance.onend = () => {
         currentChunkIndex++;
         readNextChunk(selectedLang);
       };
 
-      utterance.onerror = (e) => {
-        console.error("Speech Error:", e);
+      utterance.onerror = () => {
         currentChunkIndex++;
         readNextChunk(selectedLang);
       };
@@ -141,9 +155,7 @@
       isSpeaking = false;
       chunks = [];
       currentChunkIndex = 0;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       document.getElementById('statusBox').style.display = 'none';
     }
 
@@ -152,11 +164,88 @@
       document.getElementById('textInput').value = '';
     }
 
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
+    // 3. មុខងារទាញយកសំឡេង MP3 (Download MP3)
+    function downloadAudio() {
+      const text = document.getElementById('textInput').value.trim();
+      const lang = document.getElementById('langSelect').value;
+
+      if (!text) {
+        alert("សូមបញ្ចូលអត្ថបទដើម្បីទាញយក MP3!");
+        return;
+      }
+
+      const voice = (lang === 'km-KH') ? 'Khmer' : 'Brian';
+      const cleanText = encodeURIComponent(text);
+      const audioUrl = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${cleanText}`;
+
+      const a = document.createElement('a');
+      a.href = audioUrl;
+      a.download = `TTS_Audio_${Date.now()}.mp3`;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
+
+    // 4. មុខងារចែករំលែក (Share Text)
+    function shareText() {
+      const text = document.getElementById('textInput').value.trim();
+      if (!text) {
+        alert("គ្មានអត្ថបទសម្រាប់ចែករំលែកទេ!");
+        return;
+      }
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'អត្ថបទសំឡេង',
+          text: text,
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        navigator.clipboard.writeText(text);
+        alert("បាន Copy អត្ថបទទៅកាន់ Clipboard រួចរាល់!");
+      }
+    }
+
+    // 5. មុខងារគ្រប់គ្រងប្រវត្តិ (History Log)
+    function saveToHistory(text) {
+      let history = JSON.parse(localStorage.getItem('tts_history') || '[]');
+      if (!history.includes(text)) {
+        history.unshift(text);
+        if (history.length > 5) history.pop(); // រក្សាទុកត្រឹម ៥ អត្ថបទចុងក្រោយ
+        localStorage.setItem('tts_history', JSON.stringify(history));
+        renderHistory();
+      }
+    }
+
+    function renderHistory() {
+      const historyList = document.getElementById('historyList');
+      let history = JSON.parse(localStorage.getItem('tts_history') || '[]');
+      historyList.innerHTML = '';
+
+      if (history.length === 0) {
+        historyList.innerHTML = '<li style="color: #64748b; font-size: 12px;">គ្មានប្រវត្តិអត្ថបទទេ</li>';
+        return;
+      }
+
+      history.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.style.cssText = "background: #0f172a; padding: 8px; border-radius: 6px; margin-bottom: 5px; color: #94a3b8; font-size: 13px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
+        li.innerText = `${index + 1}. ${item}`;
+        li.onclick = () => {
+          document.getElementById('textInput').value = item;
+        };
+        historyList.appendChild(li);
+      });
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('tts_history');
+      renderHistory();
+    }
+
+    // បង្ហាញប្រវត្តិពេលបើក Web ដំបូង
+    window.onload = renderHistory;
   </script>
 </body>
 </html>

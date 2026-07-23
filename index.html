@@ -1,31 +1,103 @@
-<!-- បន្ថែមប៊ូតុងនេះក្នុង <div class="header-actions"> នៃ Header -->
-<button class="btn-qcm" onclick="openQcmModal()">
-  <i class="fa-solid fa-stopwatch"></i> ប្រឡង QCM
-</button>
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>កម្មវិធីអានសៀវភៅ & ប្រឡង QCM</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- FontAwesome សម្រាប់ Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-family-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
-<!-- បន្ថែម Modal QCM នេះនៅខាងក្រោមគេបង្អស់នៃ index.html (មុន <script src="script.js">) -->
-<div class="qcm-modal-overlay" id="qcmModal">
-  <div class="qcm-card">
-    <div class="qcm-header">
-      <h2><i class="fa-solid fa-file-pen"></i> ប្រឡង QCM ឱសថសាស្ត្រ</h2>
-      <div class="timer-box" id="timerBox">
-        <i class="fa-solid fa-clock"></i> <span id="timeDisplay">10:00</span>
+  <!-- HEADER -->
+  <header class="main-header">
+    <div class="logo">
+      <i class="fa-solid fa-book-open-reader"></i> បណ្ណាល័យឌីជីថល
+    </div>
+    <div class="header-actions">
+      <!-- ប៊ូតុងបើក QCM Modal -->
+      <button class="btn-qcm" onclick="openQcmModal()">
+        <i class="fa-solid fa-stopwatch"></i> ប្រឡង QCM (៥ នាទី)
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTAINER សៀវភៅ -->
+  <main class="container">
+    <h1 class="main-title">បញ្ជីសៀវភៅប្រវត្តិសាស្ត្រ</h1>
+    
+    <div class="book-grid">
+      <!-- សៀវភៅទី ១ -->
+      <div class="book-card">
+        <div class="book-cover">
+          <i class="fa-solid fa-book"></i>
+        </div>
+        <div class="book-info">
+          <h3>សៀវភៅទី ១៖ ប្រវត្តិសាស្ត្រខ្មែរ ភាគ ១</h3>
+          <p>សិក្សាអំពីប្រវត្តិសាស្ត្រសម័យហ្វូណន ចេនឡា និងដើមសម័យអង្គរ។</p>
+          <button class="btn-read" onclick="openBook(1)">
+            <i class="fa-solid fa-eye"></i> អានសៀវភៅ
+          </button>
+        </div>
       </div>
-      <button class="btn-close-qcm" onclick="closeQcmModal()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
 
-    <!-- ផ្ទាំងសំណួរ -->
-    <div id="qcmBody" class="qcm-body">
-      <div id="questionContainer"></div>
-      <button class="btn-submit-qcm" onclick="submitQcm()">បញ្ជូនចម្លើយ (Submit)</button>
+      <!-- សៀវភៅទី ២ -->
+      <div class="book-card">
+        <div class="book-cover cover-2">
+          <i class="fa-solid fa-journal-whills"></i>
+        </div>
+        <div class="book-info">
+          <h3>សៀវភៅទី ២៖ ប្រវត្តិសាស្ត្រខ្មែរ ភាគ ២</h3>
+          <p>សិក្សាអំពីសម័យអង្គរដ៏រុងរឿង ការសាងសង់អង្គរវត្ត និងសម័យក្រោយអង្គរ។</p>
+          <button class="btn-read" onclick="openBook(2)">
+            <i class="fa-solid fa-eye"></i> អានសៀវភៅ
+          </button>
+        </div>
+      </div>
     </div>
+  </main>
 
-    <!-- ផ្ទាំងបង្ហាញលទ្ធផល -->
-    <div id="qcmResult" class="qcm-result" style="display: none;">
-      <i class="fa-solid fa-trophy trophy-icon"></i>
-      <h3>លទ្ធផលនៃការប្រឡង</h3>
-      <p id="scoreText" class="score-text">អ្នកទទួលបាន 0 / 0 ពិន្ទុ</p>
-      <button class="btn-submit-qcm" onclick="restartQcm()"><i class="fa-solid fa-rotate-right"></i> ធ្វើម្តងទៀត</button>
+  <!-- MODAL អានសៀវភៅ -->
+  <div class="modal-overlay" id="bookModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalBookTitle">ចំណងជើងសៀវភៅ</h2>
+        <button class="btn-close" onclick="closeBookModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modalBookContent">
+        <!-- ខ្លឹមសារសៀវភៅនឹងបង្ហាញនៅទីនេះ -->
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- MODAL ប្រឡង QCM -->
+  <div class="qcm-modal-overlay" id="qcmModal">
+    <div class="qcm-card">
+      <div class="qcm-header">
+        <h2><i class="fa-solid fa-file-pen"></i> ប្រឡង QCM ប្រវត្តិសាស្ត្រ</h2>
+        <div class="timer-box">
+          <i class="fa-solid fa-clock"></i> <span id="timeDisplay">05:00</span>
+        </div>
+        <button class="btn-close-qcm" onclick="closeQcmModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- ផ្ទាំងសំណួរ -->
+      <div id="qcmBody" class="qcm-body">
+        <div id="questionContainer"></div>
+        <button class="btn-submit-qcm" onclick="submitQcm()">បញ្ជូនចម្លើយ (Submit)</button>
+      </div>
+
+      <!-- ផ្ទាំងបង្ហាញលទ្ធផល -->
+      <div id="qcmResult" class="qcm-result" style="display: none;">
+        <i class="fa-solid fa-trophy trophy-icon"></i>
+        <h3>លទ្ធផលនៃការប្រឡង</h3>
+        <p id="scoreText" class="score-text">អ្នកទទួលបាន 0 / 10 ពិន្ទុ</p>
+        <button class="btn-submit-qcm" onclick="restartQcm()"><i class="fa-solid fa-rotate-right"></i> ធ្វើម្តងទៀត</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,26 +1,18 @@
-// ១. ទាញយកទិន្នន័យសៀវភៅចេញពី localStorage (បើគ្មានទេ ប្រើទិន្នន័យគំរូខាងក្រោម)
-let defaultBooks = [
+// បញ្ជីសៀវភៅដែលមានក្នុង Website
+let books = [
   {
     id: 1,
     title: "ទស្សនវិទ្យា ផ្ទៃមុខ",
     category: "អភិវឌ្ឍខ្លួន",
     author: "អ្នកនិពន្ធ៖ Create by van",
-    cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400",
-    link: "https://drive.google.com"
+    cover: "https://lh3.googleusercontent.com/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj", // Direct Link រូប Cover របស់អ្នក
+    link: "https://drive.google.com/file/d/1qQfvqpC4DgtiTKPzgco2_ETeESjdiixj/view?usp=sharing" // Link PDF សៀវភៅរបស់អ្នក
   }
 ];
 
-// ពិនិត្យមើលថា តើមានទិន្នន័យក្នុង localStorage ឬនៅ?
-let books = JSON.parse(localStorage.getItem("socheat_library_books")) || defaultBooks;
-
 let currentCategory = "all";
 
-// ២. មុខងាររក្សាទុកទិន្នន័យចូលក្នុង localStorage
-function saveBooksToLocalStorage() {
-  localStorage.setItem("socheat_library_books", JSON.stringify(books));
-}
-
-// ៣. បង្ហាញសៀវភៅលើអេក្រង់
+// មុខងារបង្ហាញសៀវភៅលើអេក្រង់
 function displayBooks(bookArray) {
   const bookGrid = document.getElementById("bookGrid");
   bookGrid.innerHTML = "";
@@ -32,12 +24,7 @@ function displayBooks(bookArray) {
 
   bookArray.forEach((book) => {
     const bookHTML = `
-      <div class="book-card" style="position: relative;">
-        <!-- ប៊ូតុងលុបសៀវភៅ -->
-        <button onclick="deleteBook(${book.id})" style="position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; z-index: 5;" title="លុបសៀវភៅ">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-
+      <div class="book-card">
         <img src="${book.cover}" class="book-cover" alt="Cover" onerror="this.src='https://via.placeholder.com/200x250?text=No+Cover'">
         <span class="book-badge">${book.category}</span>
         <div class="book-title">${book.title}</div>
@@ -51,7 +38,7 @@ function displayBooks(bookArray) {
   });
 }
 
-// ៤. តម្រងតាមមុខវិជ្ជា
+// មុខងារជ្រើសរើស Category
 function selectCategory(category) {
   currentCategory = category;
   const buttons = document.querySelectorAll(".cat-btn");
@@ -60,7 +47,7 @@ function selectCategory(category) {
   filterBooks();
 }
 
-// ៥. ស្វែងរកសៀវភៅ (Search)
+// មុខងារ Search
 function filterBooks() {
   const query = document.getElementById("searchInput").value.toLowerCase();
   const filtered = books.filter(book => {
@@ -71,16 +58,16 @@ function filterBooks() {
   displayBooks(filtered);
 }
 
-// ៦. បើក/បិទ Modal
+// បើក/បិទ Modal បន្ថែមសៀវភៅ
 function openUploadModal() { document.getElementById("uploadModal").classList.add("active"); }
 function closeUploadModal() { document.getElementById("uploadModal").classList.remove("active"); }
 
-// ៧. បន្ថែមសៀវភៅថ្មី និង Save ចូល localStorage
+// បន្ថែមសៀវភៅបណ្តោះអាសន្នតាម Form
 function handleUpload(event) {
   event.preventDefault();
 
   const newBook = {
-    id: Date.now(), // បង្កើត ID ប្លែកៗគ្នាសម្រាប់សៀវភៅនីមួយៗ
+    id: Date.now(),
     title: document.getElementById("bookTitle").value,
     category: document.getElementById("bookCategory").value,
     author: "អ្នកនិពន្ធ៖ " + document.getElementById("bookAuthor").value,
@@ -88,24 +75,13 @@ function handleUpload(event) {
     link: document.getElementById("bookPdfUrl").value
   };
 
-  books.unshift(newBook); // បន្ថែមសៀវភៅថ្មីទៅខាងដើមគេ
-  saveBooksToLocalStorage(); // រក្សាទុកចូលក្នុង Browser ភ្លាមៗ
+  books.unshift(newBook);
   filterBooks();
 
   closeUploadModal();
   document.getElementById("uploadForm").reset();
-  alert("បន្ថែមសៀវភៅ និងរក្សាទុកបានជោគជ័យ!");
-}
-
-// ៨. មុខងារលុបសៀវភៅ
-function deleteBook(id) {
-  if (confirm("តើអ្នកពិតជាចង់លុបសៀវភៅនេះមែនទេ?")) {
-    books = books.filter(book => book.id !== id);
-    saveBooksToLocalStorage();
-    filterBooks();
-  }
+  alert("បន្ថែមសៀវភៅបានជោគជ័យ!");
 }
 
 // ដំណើរការបង្ហាញសៀវភៅដំបូង
 displayBooks(books);
-    

@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទខ្មែរជាសំឡេង (Khmer TTS)</title>
+  <title>កម្មវិធីអានអត្ថបទខ្មែរ (Khmer Text to Speech)</title>
   <link rel="stylesheet" href="style.css">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- ResponsiveVoice Library (សម្រាប់អានភាសាខ្មែរ) -->
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
 </head>
 <body>
 
   <div class="tts-container">
     <div class="tts-header">
-      <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទខ្មែរ (Text to Speech)</h2>
-      <p>បញ្ចូលអក្សរខ្មែរខាងក្រោម រួចជ្រើសរើសប្រភេទសំឡេងដើម្បីស្តាប់</p>
+      <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទខ្មែរ (TTS)</h2>
+      <p>បញ្ចូលអក្សរខ្មែរខាងក្រោម រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
     <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
@@ -21,28 +24,11 @@
       <textarea id="textInput" placeholder="សូមបញ្ចូលអត្ថបទខ្មែរនៅទីនេះ..."></textarea>
     </div>
 
-    <!-- ការកំណត់សំឡេង -->
+    <!-- សារ៉េល្បឿននៃការអាន -->
     <div class="controls-grid">
-      <!-- ជ្រើសរើសប្រភេទសំឡេង -->
-      <div class="control-card">
-        <label for="voiceType"><i class="fa-solid fa-user-large"></i> ប្រភេទសំឡេង</label>
-        <select id="voiceType">
-          <option value="female">សំឡេងស្រី (Female)</option>
-          <option value="male">សំឡេងប្រុស (Male)</option>
-          <option value="child">សំឡេងក្មេង (Child)</option>
-        </select>
-      </div>
-
-      <!-- សារ៉េល្បឿននៃការអាន -->
       <div class="control-card">
         <label for="rateRange"><i class="fa-solid fa-gauge-high"></i> ល្បឿនអាន: <span id="rateVal">1.0</span>x</label>
-        <input type="range" id="rateRange" min="0.5" max="1.8" step="0.1" value="1">
-      </div>
-
-      <!-- សារ៉េកម្រិតសំឡេង (Pitch) -->
-      <div class="control-card">
-        <label for="pitchRange"><i class="fa-solid fa-sliders"></i> កម្រិតសំឡេង (Pitch): <span id="pitchVal">1.0</span></label>
-        <input type="range" id="pitchRange" min="0.5" max="1.8" step="0.1" value="1">
+        <input type="range" id="rateRange" min="0.5" max="1.5" step="0.1" value="1">
       </div>
     </div>
 

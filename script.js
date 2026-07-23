@@ -1,43 +1,41 @@
-// បញ្ជីទិន្នន័យបទចម្រៀង
-const playlistData = [
-  {
-    title: "បទទី ១ - ស្វាគមន៍",
-    artist: "តន្ត្រីសម្រាកអារម្មណ៍",
-    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-  },
-  {
-    title: "បទទី ២ - ចង្វាក់រហ័ស",
-    artist: "បទភ្លេងសប្បាយៗ",
-    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-  }
-];
-
-// មុខងារជ្រើសរើស និងលេងបទចម្រៀងតាម index
-function selectSong(index) {
-  const song = playlistData[index];
-  if (!song) return;
-
-  // កែប្រែចំណងជើង និងឈ្មោះតារាចម្រៀងលើអេក្រង់
-  document.getElementById("songTitle").innerText = song.title;
-  document.getElementById("artistName").innerText = song.artist;
-
-  // ដូរប្រភព Audio និងបញ្ជាឱ្យលេង (Play)
-  const audioPlayer = document.getElementById("audioPlayer");
-  audioPlayer.src = song.src;
-  audioPlayer.play();
-
-  // ប្តូរ Highlight Active លើ Playlist
-  const listItems = document.querySelectorAll("#playlist li");
-  listItems.forEach((li, idx) => {
-    if (idx === index) {
-      li.classList.add("active");
-    } else {
-      li.classList.remove("active");
-    }
-  });
+// មុខងារបើក និងបិទផ្ទាំង Login Popup
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('active');
 }
 
-// មុខងារ Logout គំរូ
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('active');
+}
+
+// មុខងារ Handle Login ពេលចុច Submit Form
+function handleLogin(event) {
+  event.preventDefault(); // ការពារកុំឱ្យ Page Refresh
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const phone = document.getElementById('loginPhone').value.trim();
+
+  if (!email && !phone) {
+    alert("សូមបញ្ចូល Gmail ឬ លេខទូរស័ព្ទរបស់អ្នក!");
+    return;
+  }
+
+  const accountInfo = email ? email : phone;
+  
+  // ប្តូរ UI បង្ហាញឈ្មោះអ្នកប្រើប្រាស់
+  const userStatus = document.getElementById('userStatus');
+  userStatus.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="color: #00ff87; font-weight: bold;"><i class="fa-solid fa-user-check"></i> ${accountInfo}</span>
+      <button onclick="logout()" class="btn-login" style="background: #333; color: #fff;">ចាកចេញ</button>
+    </div>
+  `;
+
+  // បិទ Pop-up
+  closeLoginModal();
+  alert("ចូលប្រព័ន្ធជោគជ័យ! ស្វាគមន៍មកកាន់ប្រព័ន្ធ។");
+}
+
+// មុខងារ Logout
 function logout() {
-  alert("អ្នកបានចាកចេញពីប្រព័ន្ធ!");
-                          }
+  location.reload();
+    }

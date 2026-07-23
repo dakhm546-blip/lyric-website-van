@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>កម្មវិធីអានអត្ថបទ (Native TTS)</title>
+  <title>កម្មវិធីអានអត្ថបទវែង (Long Text Reader)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,91 +11,147 @@
 
   <div class="tts-container">
     <div class="tts-header">
-      <h2><i class="fa-solid fa-volume-high"></i> កម្មវិធីអានអត្ថបទ (TTS)</h2>
-      <p>ជ្រើសរើសភាសា បញ្ចូលអត្ថបទ រួចចុច "ចាក់សំឡេង"</p>
+      <h2><i class="fa-solid fa-book-open-reader"></i> កម្មវិធីអានអត្ថបទវែងៗ (TTS)</h2>
+      <p>បញ្ចូលអត្ថបទច្រើន ឬវែងៗ ខាងក្រោម រួចចុច "ចាក់សំឡេង"</p>
     </div>
 
-    <!-- ប្រអប់ជ្រើសរើសភាសា -->
+    <!-- ជ្រើសរើសភាសា -->
     <div style="margin-bottom: 15px;">
       <label for="langSelect" style="color: #cbd5e1; font-size: 14px; display: block; margin-bottom: 5px;">
         <i class="fa-solid fa-language"></i> ជ្រើសរើសភាសា៖
       </label>
       <select id="langSelect" style="width: 100%; padding: 10px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 8px; outline: none;">
-        <option value="en-US">ភាសាអង់គ្លេស (English)</option>
         <option value="km-KH">ភាសាខ្មែរ (Khmer)</option>
+        <option value="en-US">ភាសាអង់គ្លេស (English)</option>
       </select>
     </div>
 
     <!-- ប្រអប់បញ្ចូលអត្ថបទ -->
     <div class="input-group">
-      <textarea id="textInput" placeholder="Enter text or បញ្ចូលអត្ថបទ..."></textarea>
+      <textarea id="textInput" placeholder="បញ្ចូលអត្ថបទវែងៗ ឬច្រើនមេរៀននៅទីនេះ..."></textarea>
+    </div>
+
+    <!-- របារបង្ហាញព័ត៌មាននៃការអាន -->
+    <div id="statusBox" style="margin-top: 10px; color: #38bdf8; font-size: 14px; text-align: center; display: none;">
+      កំពុងអាន... <span id="chunkStatus">0/0</span>
     </div>
 
     <!-- ប៊ូតុងបញ្ជា -->
-    <div class="button-group" style="margin-top: 15px;">
-      <button id="btnPlay" class="btn btn-play" onclick="speakText()">
+    <div class="button-group" style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap;">
+      <button id="btnPlay" class="btn btn-play" onclick="startReading()" style="flex: 1; min-width: 120px;">
         <i class="fa-solid fa-play"></i> ចាក់សំឡេង
       </button>
-      <button id="btnStop" class="btn btn-stop" onclick="stopText()">
+      <button id="btnPause" class="btn" onclick="pauseReading()" style="background: #eab308; color: #000; flex: 1; min-width: 100px;">
+        <i class="fa-solid fa-pause"></i> ផ្អាក
+      </button>
+      <button id="btnStop" class="btn btn-stop" onclick="stopReading()" style="flex: 1; min-width: 100px;">
         <i class="fa-solid fa-square"></i> បញ្ឈប់
       </button>
-      <button id="btnClear" class="btn btn-clear" onclick="clearText()">
-        <i class="fa-solid fa-trash-can"></i> លុបអក្សរ
+      <button id="btnClear" class="btn btn-clear" onclick="clearAll()" style="flex: 1; min-width: 100px;">
+        <i class="fa-solid fa-trash-can"></i> លុប
       </button>
     </div>
   </div>
 
   <script>
-    // មុខងារចាក់សំឡេងតាម Native Browser Engine
-    function speakText() {
+    let chunks = [];
+    let currentChunkIndex = 0;
+    let isSpeaking = false;
+
+    // បំបែកអត្ថបទវែងជាផ្នែកតូចៗ (Chunks) តាមសញ្ញាក្បៀស សញ្ញាចុច ឬចុះបន្ទាត់
+    function splitTextIntoChunks(text) {
+      // បំបែកតាម newline, 符号, ៖, ៕, ., !, ?
+      return text.split(/[\n.!?៖៕]+/).filter(chunk => chunk.trim().length > 0);
+    }
+
+    function startReading() {
       const text = document.getElementById('textInput').value.trim();
       const selectedLang = document.getElementById('langSelect').value;
+      const statusBox = document.getElementById('statusBox');
 
       if (!text) {
         alert("សូមបញ្ចូលអត្ថបទជាមុនសិន!");
         return;
       }
 
-      // ប្រសិនបើ Browser មិន Support Web Speech API ទេ
-      if (!('speechSynthesis' in window)) {
-        alert("Browser របស់អ្នកមិនគាំទ្រការចាក់សំឡេងនេះទេ!");
+      // ប្រសិនបើកំពុង Pause ឲ្យវា Resume អានត
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
         return;
       }
 
-      // បញ្ឈប់សំឡេងដែលកំពុងចាក់ចាស់ៗ
-      window.speechSynthesis.cancel();
+      // បញ្ឈប់ការអានចាស់ៗ
+      stopReading();
 
-      // បង្កើត Object អានអត្ថបទ
-      const utterance = new SpeechSynthesisUtterance(text);
+      // បំបែកអត្ថបទវែងជា Chunk
+      chunks = splitTextIntoChunks(text);
+      if (chunks.length === 0) return;
+
+      currentChunkIndex = 0;
+      isSpeaking = true;
+      statusBox.style.display = 'block';
+
+      // ចាប់ផ្ដើមអាន Chunk ទី១
+      readNextChunk(selectedLang);
+    }
+
+    function readNextChunk(selectedLang) {
+      if (!isSpeaking || currentChunkIndex >= chunks.length) {
+        document.getElementById('statusBox').style.display = 'none';
+        isSpeaking = false;
+        return;
+      }
+
+      const chunkText = chunks[currentChunkIndex];
+      document.getElementById('chunkStatus').innerText = `(${currentChunkIndex + 1}/${chunks.length})`;
+
+      const utterance = new SpeechSynthesisUtterance(chunkText);
       utterance.lang = selectedLang;
-      utterance.rate = 0.9; // ល្បឿនអានល្មម
+      utterance.rate = 0.9; // ល្បឿនអាន
 
-      // ស្វែងរកសំឡេងដែលត្រូវគ្នានៅក្នុងទូរស័ព្ទ
+      // ស្វែងរកសំឡេង
       const voices = window.speechSynthesis.getVoices();
       const matchedVoice = voices.find(v => v.lang.includes(selectedLang) || v.lang.startsWith(selectedLang.split('-')[0]));
-      
       if (matchedVoice) {
         utterance.voice = matchedVoice;
       }
 
-      // បញ្ជាឱ្យទូរស័ព្ទ/Browser បញ្ចេញសំឡេង
+      // ពេលអានចប់ Chunk មួយ ឲ្យវាអាន Chunk បន្ទាប់ដោយស្វ័យប្រវត្តិ
+      utterance.onend = () => {
+        currentChunkIndex++;
+        readNextChunk(selectedLang);
+      };
+
+      utterance.onerror = (e) => {
+        console.error("Speech Error:", e);
+        currentChunkIndex++;
+        readNextChunk(selectedLang);
+      };
+
       window.speechSynthesis.speak(utterance);
     }
 
-    // បញ្ឈប់សំឡេង
-    function stopText() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+    function pauseReading() {
+      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
       }
     }
 
-    // លុបអក្សរ
-    function clearText() {
-      stopText();
+    function stopReading() {
+      isSpeaking = false;
+      chunks = [];
+      currentChunkIndex = 0;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      document.getElementById('statusBox').style.display = 'none';
+    }
+
+    function clearAll() {
+      stopReading();
       document.getElementById('textInput').value = '';
     }
 
-    // លុប Cache នៃការស្វែងរកសំឡេង
     if ('speechSynthesis' in window) {
       window.speechSynthesis.onvoiceschanged = () => {
         window.speechSynthesis.getVoices();
@@ -103,5 +159,4 @@
     }
   </script>
 </body>
-  </html>
-  
+</html>

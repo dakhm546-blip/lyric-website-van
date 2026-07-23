@@ -1,22 +1,15 @@
-// ទាញយក UI Elements ពី HTML
 const textInput = document.getElementById('textInput');
 const rateRange = document.getElementById('rateRange');
 const rateVal = document.getElementById('rateVal');
 
-// បង្កើត Global Variable សម្រាប់ទប់ស្កាត់ Audio កុំឲ្យចាក់ជាន់គ្នា
-let currentAudio = null;
-
-// បង្ហាញលេខល្បឿនអាននៅលើអេក្រង់
+// បង្ហាញលេខល្បឿន
 if (rateRange && rateVal) {
   rateRange.addEventListener('input', () => {
     rateVal.innerText = rateRange.value;
-    if (currentAudio) {
-      currentAudio.playbackRate = parseFloat(rateRange.value);
-    }
   });
 }
 
-// មុខងារចាក់សំឡេង (Google TTS)
+// មុខងារចាក់សំឡេង
 function speakText() {
   const text = textInput.value.trim();
   
@@ -25,36 +18,26 @@ function speakText() {
     return;
   }
 
-  // ប្រសិនបើកំពុងចាក់សំឡេងចាស់ ត្រូវបញ្ឈប់វាសិន
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
+  // ប្រសិនបើកំពុងចាក់ ត្រូវបញ្ឈប់សិន
+  if (responsiveVoice.isPlaying()) {
+    responsiveVoice.cancel();
   }
 
-  // បង្កើត URL សំឡេងខ្មែរតាម Google Translate
-  const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=km&client=tw-ob`;
-  
-  // បង្កើត Audio Object ថ្មី
-  currentAudio = new Audio(audioUrl);
-  
-  // កំណត់ល្បឿននៃការចាក់សំឡេង
-  if (rateRange) {
-    currentAudio.playbackRate = parseFloat(rateRange.value);
-  }
+  // ទាញយកតម្លៃល្បឿន
+  const speed = parseFloat(rateRange.value);
 
-  // ចាប់ផ្ដើមចាក់សំឡេង
-  currentAudio.play().catch(error => {
-    console.error("Audio playback error:", error);
-    alert("មិនអាចចាក់សំឡេងបានទេ! សូមពិនិត្យមើលការភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក។");
+  // បញ្ជាឱ្យ responsiveVoice អានជាភាសាខ្មែរ (Khmer Female)
+  responsiveVoice.speak(text, "Khmer Female", {
+    rate: speed,
+    pitch: 1,
+    volume: 1
   });
 }
 
-// មុខងារបញ្ឈប់សំឡេង
+// មុខងារបញ្ឈប់
 function stopText() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
+  if (responsiveVoice.isPlaying()) {
+    responsiveVoice.cancel();
   }
 }
 
@@ -62,4 +45,4 @@ function stopText() {
 function clearText() {
   stopText();
   textInput.value = '';
-      }
+}
